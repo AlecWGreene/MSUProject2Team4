@@ -1,40 +1,33 @@
-function connectHandler(socket) {
-  const lobby = socket.nsp;
-
-  lobby.emit("User has connected");
+// Emit message to lobby on user connect
+function connectHandler() {
+  this.nsp.emit("Connection Message", "User has connected");
 }
 
-function messageHandler(socket) {}
+// Emit message to lobby on user disconnect
+function disconnectHandler() {
+    this.nsp.emit("Disconnection Message", "User has disconnected");
+}
 
-module.exports = function(http, passport, session) {
-  const io = require("socket.io")(http);
+// Transmit messages among lobby members
+function messageHandler(message) {
+    this.nsp.emit("chat message", message);
+}
 
-  // Authenticate user for socket access
-  io.use(session({ secret: "arthur" }));
-  io.use(passport.initialize());
-  io.use(passport.session());
-
-  // Setup socket authentication middleware
-  io.use((socket, next) => {
-    if (socket.request.user) {
-      return next();
-    } else {
-      return next(new Error("User is not authenticated"));
-    }
+// Initialize socket instance on server and setup framework for lobby socket creation
+module.exports = function(server, passport, session) {
+  const io = require("socket.io")(server, {
+    transports: ["websocket", "polling"]
   });
 
   // Setup lobby sockets
   const lobbyNamespaces = io.of(/^\/lobby-[a-zA-Z0-9]+$/);
 
-  // Register event listeners
-  lobbyNamespaces.on("connect", connectHandler);
-  lobbyNamespaces.on("chat message", messageHandler);
-
-  // Verify user has access to lobby
-  lobbyNamespaces.use((socket, next) => {
-    /** @todo verify user has access */
-    next();
+  // Register the event handlers when a lobby is initialized
+  lobbyNamespaces.on("connect", socket => {
+    socket.on("connect", connectHandler.bind(socket));
+    socket.on("disconnect", disconnectHandler.bind(socket));
+    socket.on("chat message", messageHandler.bind(socket));
   });
 
   return io;
-}
+};
