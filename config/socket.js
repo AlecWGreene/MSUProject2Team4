@@ -5,16 +5,16 @@ function connectHandler() {
 
 // Emit message to lobby on user disconnect
 function disconnectHandler() {
-    this.nsp.emit("Disconnection Message", "User has disconnected");
+  this.nsp.emit("Disconnection Message", "User has disconnected");
 }
 
 // Transmit messages among lobby members
 function messageHandler(message) {
-    this.nsp.emit("chat message", message);
+  this.nsp.emit("chat message", message);
 }
 
 // Initialize socket instance on server and setup framework for lobby socket creation
-module.exports = function(server, passport, session) {
+module.exports = function(server) {
   const io = require("socket.io")(server, {
     transports: ["websocket", "polling"]
   });
