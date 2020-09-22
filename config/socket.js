@@ -4,7 +4,7 @@ function userConnectHandler(data) {
 }
 
 // Emit message to lobby on user disconnect
-function userDisconnectHandler(data) {
+function userDisconnectHandler() {
   this.nsp.emit("user disconnect", {
     user: "Greene"
   });
@@ -16,7 +16,7 @@ function messageHandler(message) {
 }
 
 // Initialize socket instance on server and setup framework for lobby socket creation
-module.exports = function(server) {
+module.exports = function(server, middleware) {
   const io = require("socket.io")(server, {
     transports: ["websocket", "polling"]
   });
