@@ -5,6 +5,7 @@ function userConnectHandler(data) {
 
 // Emit message to lobby on user disconnect
 function userDisconnectHandler() {
+  console.log(this.request.session.passport.user);
   this.nsp.emit("user disconnect", {
     user: "Greene"
   });
@@ -19,6 +20,11 @@ function messageHandler(message) {
 module.exports = function(server, middleware) {
   const io = require("socket.io")(server, {
     transports: ["websocket", "polling"]
+  });
+
+  // Register the middleware for the socket
+  io.use((socket, next) => {
+    middleware(socket.request, {}, next);
   });
 
   // Setup lobby sockets
