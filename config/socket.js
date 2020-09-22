@@ -1,19 +1,23 @@
 // Emit message to lobby on user connect
-function userConnectHandler(data) {
-  this.nsp.emit("user connect", data);
+function userConnectHandler() {
+  this.nsp.emit("user connect", {
+    user: this.request.session.passport.user
+  });
 }
 
 // Emit message to lobby on user disconnect
 function userDisconnectHandler() {
-  console.log(this.request.session.passport.user);
   this.nsp.emit("user disconnect", {
-    user: "Greene"
+    user: this.request.session.passport.user
   });
 }
 
 // Transmit messages among lobby members
-function messageHandler(message) {
-  this.nsp.emit("chat message", message);
+function messageHandler(chatMessage) {
+  this.nsp.emit("chat message", {
+    user: this.request.session.passport.user,
+    message: chatMessage
+  });
 }
 
 // Initialize socket instance on server and setup framework for lobby socket creation

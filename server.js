@@ -9,7 +9,6 @@ const cors = require("cors");
 const PORT = process.env.PORT || 8080;
 const db = require("./models");
 
-<<<<<<< HEAD
 // Setup session middleware
 const sessionMiddleware = session({
   name: "Avalon App User",
@@ -19,9 +18,6 @@ const sessionMiddleware = session({
 });
 
 // Setup express app with configurations
-=======
-// Setup express app with middle configurations
->>>>>>> master
 const app = express();
 app.use(cors());
 app.options("*", cors());
