@@ -3,6 +3,10 @@ const $chatForm = $("#chat-form");
 const $chatInput = $("#chat-input"); 
 const $chatDisplay = $("#chat-messages");
 
+// Connect to lobby namespace
+const lobbyKey = "aaaa";
+const socket = io(`/lobby-${lobbyKey}`);
+
 // Passes information to socket
 function chatSubmitHandler(event) {
   event.preventDefault();
@@ -10,10 +14,6 @@ function chatSubmitHandler(event) {
   $chatInput.val("");
   return false;
 }
-
-// Connect to lobby namespace
-const lobbyKey = "aaaa";
-const socket = io(`/lobby-${lobbyKey}`);
 
 // Display a message when a lobby member connects
 function connectionHandler(data) {
@@ -26,8 +26,8 @@ function disconnectionHandler(data) {
 }
 
 // Sends a user's message to lobby
-function messageHandler(message) {
-  $chatDisplay.append($("<li>").text(message));
+function messageHandler(data) {
+  $chatDisplay.append($("<li>").text(data.message));
 }
 
 // Add event listeners on disconnect and emit a connection message
