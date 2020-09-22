@@ -4,7 +4,6 @@ $(document).ready(() => {
   const usernameInput = $("input#username-input");
   const emailInput = $("input#email-input");
   const passwordInput = $("input#password-input");
-  const lobbyInput = $("input#lobby-input");
 
   // When the form is submitted, we validate there's an email and password entered
   loginForm.on("submit", event => {
@@ -12,16 +11,10 @@ $(document).ready(() => {
     const userData = {
       username: usernameInput.val().trim(),
       email: emailInput.val().trim(),
-      password: passwordInput.val().trim(),
-      lobby: lobbyInput.val().trim()
+      password: passwordInput.val().trim()
     };
 
-    if (
-      !userData.username ||
-      !userData.email ||
-      !userData.password ||
-      !userData.lobby
-    ) {
+    if (!userData.username || !userData.email || !userData.password) {
       return;
     }
 
@@ -30,16 +23,14 @@ $(document).ready(() => {
     usernameInput.val("");
     emailInput.val("");
     passwordInput.val("");
-    lobbyInput.val("");
   });
 
   // loginUser does a post to our "api/login" route and if successful, redirects us the the members page
-  function loginUser(username, email, password, lobby) {
+  function loginUser(username, email, password) {
     $.post("/api/login", {
       username: username,
       email: email,
-      password: password,
-      lobby: lobby
+      password: password
     })
       .then(() => {
         window.location.replace("/home");
