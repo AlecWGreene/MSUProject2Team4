@@ -1,6 +1,7 @@
 // Dependencies
 const express = require("express");
 const session = require("express-session");
+const handlebars = require("express-handlebars");
 const passport = require("./config/passport");
 const cors = require("cors");
 
@@ -8,7 +9,7 @@ const cors = require("cors");
 const PORT = process.env.PORT || 8080;
 const db = require("./models");
 
-// Setup express app with configurations
+// Setup express app with middle configurations
 const app = express();
 app.use(cors());
 app.options("*", cors());
@@ -20,6 +21,10 @@ app.use(express.static("public"));
 app.use(session({ secret: "arthur", resave: true, saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Setup handlebars
+app.engine("handlebars", handlebars({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
 
 // Load our routes
 require("./routes/html-routes.js")(app);
