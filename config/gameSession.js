@@ -170,11 +170,35 @@ class GameSession {
       "Hero==".repeat(Math.max(0, numUsers - 2 - 2))
     ).split("==");
     roleArray.pop();
-    console.log(roleArray);
+
+    // Over complicated way of assigned random roles to a random number of users
+    let userIdArray = Array.apply(null, {length: numUsers}).map(Number.call, Number);
+    for(let i=0; i< roleArray.length; i++){
+        this.roleAssignments[userIdArray.splice(Math.floor(Math.random() * userIdArray.length),1)] = roleArray[i];
+    }
   }
 
   // Begin the game
-  startGame() {}
+  startGame() {
+    if(!this.ready){
+      return false;
+    }
+
+    // Game variables
+    this.gameOver = false;
+    this.roleAssignments = {};
+    this.currentKingIndex = -1;
+    this.currentPhase = "";
+    this.passedQuests = 0;
+    this.currentQuestIndex = -1;
+    this.numberPartyVotes = 0;
+    this.candidateParty = [];
+    this.currentParty = [];
+    this.partyVotes = {};
+    this.partyValidVotes = {};
+
+    this.running = true;
+  }
 
   // Assign users to a candidate party
   setPartySelection(userArray) {}
