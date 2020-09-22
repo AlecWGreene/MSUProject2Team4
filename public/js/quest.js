@@ -35,7 +35,7 @@ socket.on("connect", () => {
   $chatForm.on("submit", chatSubmitHandler);
   socket.on("chat message", messageHandler);
   socket.on("user connect", connectionHandler);
-  socket.on("user disconnect", disconnectionHandler);
+  socket.on("user leave", disconnectionHandler);
   socket.emit("user connect", {
     user: "Alec"
   });

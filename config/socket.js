@@ -5,9 +5,9 @@ function userConnectHandler(data) {
 
 // Emit message to lobby on user disconnect
 function userDisconnectHandler(data) {
-  console.log("Disconnected" + JSON.stringify(data));
-  console.log(this.nsp);
-  this.nsp.emit("user disconnect", data);
+  this.nsp.emit("user disconnect", {
+    user: "Greene"
+  });
 }
 
 // Transmit messages among lobby members
