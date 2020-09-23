@@ -1,12 +1,21 @@
 // Dependencies
 const express = require("express");
 const session = require("express-session");
+const handlebars = require("express-handlebars");
 const passport = require("./config/passport");
 const cors = require("cors");
 
 // Setup port and initialize sequelize models
 const PORT = process.env.PORT || 8080;
 const db = require("./models");
+
+// Setup session middleware
+const sessionMiddleware = session({
+  name: "Avalon App User",
+  secret: "Scorpion Samurai",
+  resave: true,
+  saveUninitialized: true
+});
 
 // Setup express app with configurations
 const app = express();
@@ -23,9 +32,13 @@ app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
 // Integrate express-session and passport to allow the authentication middleware
-app.use(session({ secret: "arthur", resave: true, saveUninitialized: true }));
+app.use(sessionMiddleware);
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Setup handlebars
+app.engine("handlebars", handlebars({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
 
 // Load our routes
 require("./routes/html-routes.js")(app);
@@ -38,7 +51,7 @@ db.sequelize.sync().then(() => {
   });
 
   // Load the socket
-  const socket = require("./config/socket")(server, passport, session);
+  const socket = require("./config/socket")(server, sessionMiddleware);
   socket.on("error", message => {
     console.log(message);
   });
