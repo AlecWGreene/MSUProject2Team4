@@ -3,6 +3,7 @@
 class GameSession {
   constructor(lobbyCode, customSettings) {
     // Static variables
+    this.phases = ["Party Selection", "Party Validation", "Party Voting"];
     this.questCriteria = {
       large: [
         {
@@ -71,22 +72,15 @@ class GameSession {
         }
       ]
     };
-    this.lobbyCode = lobbyCode;
-    this.settings = {};
-    this.users = [];
-    this.phases = [
-      "Party Selection",
-      "Party Validation",
-      "Party Formation",
-      "Party Voting"
-    ];
 
     // Game variables
+    this.currentPhase = "";
+    this.currentParty = [];
+    this.users = [];
+    this.currentKingIndex = -1;
     this.gameOver = false;
     this.quests = [];
     this.roleAssignments = {};
-    this.currentKingIndex = -1;
-    this.currentPhase = "";
     this.passedQuests = 0;
     this.currentQuestIndex = -1;
     this.numberPartyVotes = 0;
@@ -95,40 +89,28 @@ class GameSession {
     this.partyVotes = {};
     this.partyValidVotes = {};
 
-    // Setup method calls
+    // Apply any custom settings
     this.applyCustomSettings(customSettings);
-    this.setupGame(lobbyCode);
-    this.startGame();
+    this.setupGame();
   }
 
-  // Modify the instance to incorporate the chosen settings
+  // Change game settings
   applyCustomSettings(customSettings) {
-    // Use default settings
-    if (!customSettings || Object.keys(customSettings).length === 0) {
-      this.quests = Array.from(this.questCriteria.medium);
-      this.voteDuration_ValidParty = 1 * 60 * 1000; // 7 minutes
-      this.voteDuration_PassParty = 1 * 60 * 1000; // 1.5 minutes
-      this.numberMinions = 3;
-    } else {
-      // Apply custom settings that are given
-      this.quests = customSettings.size
-        ? Array.from(this.questCriteriap[customSettings.size])
-        : Array.from(this.questCriteria.medium);
-      this.voteDuration_ValidParty = customSettings.voteDuration_ValidParty
-        ? customSettings.voteDuration_ValidParty
-        : 7 * 60 * 1000; // Chosen time in ms or 7 minutes
-      this.voteDuration_PassParty = customSettings.voteDuration_PassParty
-        ? customSettings.voteDuration_PassParty
-        : 1.5 * 60 * 1000; // Chosen time in ms or 1.5 minutes
-      this.numberMinions = customSettings.numberMinions
-        ? customSettings.numberMinions
-        : 3;
-    }
+    // Timer settings
+    this.maxDuration_partySelection = 1000;
+    this.maxDuration_partyValidVote = 1000;
+    this.maxDuration_partyPassVote = 1000;
+
+    // Set quests and roles
+    this.quests = this.questCriteria.medium;
+    this.numMinions = (customSettings.gameSize && customSettings.gameSize != "medium") ? (customSettings.gameSize === "large" ? 4 : 2 ) : 3;
   }
 
-  // Initialize environment for a game sesion
-  setupGame() {
+  // Initialize GameSession to run
+  setupGame(lobbyCode) {
     // =================================== DEBUG CODE ===================================
+    this.lobbyCode = lobbyCode;
+    this.ready = true;
     // Create fake array of users
     this.users = [
       {
@@ -162,42 +144,19 @@ class GameSession {
     ];
 
     // ==================================================================================
-    const numUsers = this.users.length;
-    const roleArray = (
-      "Merlin==" +
-      "Assassin==" +
-      "Minion==".repeat(2) +
-      "Hero==".repeat(Math.max(0, numUsers - 2 - 2))
-    ).split("==");
+
+    // Setup strings to represent role tokens
+    const roleArray = ("Merlin==" + "Assassin==" + "Minion==".repeat(this.numMinions - 1) + "Hero==".repeat(Math.max(0,this.users.length - 1 - this.numMinions))).split("==");
     roleArray.pop();
+    this.roles = roleArray;
 
     // Over complicated way of assigned random roles to a random number of users
-    let userIdArray = Array.apply(null, {length: numUsers}).map(Number.call, Number);
-    for(let i=0; i< roleArray.length; i++){
-        this.roleAssignments[userIdArray.splice(Math.floor(Math.random() * userIdArray.length),1)] = roleArray[i];
+    const userIdArray = this.users.map(user => user.id);
+    for (let i = 0; i < this.roles.length; i++) {
+      this.roleAssignments[
+        userIdArray.splice(Math.floor(Math.random() * userIdArray.length), 1)
+      ] = this.roles[i];
     }
-  }
-
-  // Begin the game
-  startGame() {
-    if(!this.ready){
-      return false;
-    }
-
-    // Game variables
-    this.gameOver = false;
-    this.roleAssignments = {};
-    this.currentKingIndex = -1;
-    this.currentPhase = "";
-    this.passedQuests = 0;
-    this.currentQuestIndex = -1;
-    this.numberPartyVotes = 0;
-    this.candidateParty = [];
-    this.currentParty = [];
-    this.partyVotes = {};
-    this.partyValidVotes = {};
-
-    this.running = true;
   }
 
   // Assign users to a candidate party

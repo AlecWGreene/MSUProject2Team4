@@ -20,13 +20,14 @@ Party Vote: ${testSession.waitingOn_PartyVote()}
 Number of Passed Quests: ${testSession.passedQuests}
 
 -------------------- Current Quest -------------------------------------------------
-King: ${testSession.users[testSession.currentKingIndex]}
+King: ${testSession.users[testSession.currentKingIndex].username}
 Members: ${testSession.currentParty.join(", ")}
 
 -------------------- Party Vote  -------------------------------------------------
 Votes: ${JSON.stringify(testSession.partyVotes)}
 
 -------------------- Party Valid Vote -------------------------------------------------
+Potential Members: ${JSON.stringify(testSession.candidateParty)}
 Number of Approvals: ${JSON.stringify(testSession.partyValidVotes)}
 
 `);
