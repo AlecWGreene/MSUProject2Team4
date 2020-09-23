@@ -24,12 +24,12 @@ Number of Passed Quests: ${testSession.passedQuests}
 
 -------------------- Current Quest -------------------------------------------------
 King: ${testSession.users[testSession.currentKingIndex].username}
-Members: ${testSession.currentParty.join(", ")}
+Members: ${testSession.currentParty.map(user => user.username).join(", ")}
 Party Size: ${testSession.quests[testSession.currentQuestIndex].partySize}
 Required Fails: ${testSession.quests[testSession.currentQuestIndex].requiredFails}
 
 -------------------- Party Vote  -------------------------------------------------
-Votes: ${JSON.stringify(testSession.partyVotes)}
+Votes: ${JSON.stringify(testSession.partyPassVotes)}
 
 -------------------- Party Valid Vote -------------------------------------------------
 Potential Members: ${testSession.candidateParty.map(value => value.username).join(", ")}

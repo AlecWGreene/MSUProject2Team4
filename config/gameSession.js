@@ -7,7 +7,8 @@ class GameSession {
       "Party Selection",
       "Party Validation",
       "Party Voting",
-      "Computing"
+      "Computing",
+      "Game Over"
     ];
     this.questCriteria = {
       large: [
@@ -79,8 +80,9 @@ class GameSession {
     };
 
     // Timeout variables
+    this.timeout_PartySelection = null;
     this.timeout_PartyValid = null;
-
+    this.timeout_PartyPass = null;
 
     // Game variables
     this.currentPhase = "";
@@ -95,7 +97,7 @@ class GameSession {
     this.numberPartyVotes = 0;
     this.candidateParty = [];
     this.currentParty = [];
-    this.partyVotes = {};
+    this.partyPassVotes = {};
     this.partyValidVotes = {};
 
     // Apply any custom settings
@@ -185,9 +187,15 @@ class GameSession {
     this.currentQuestIndex = 0;
   }
 
-  // Timout function
+  // Timout function for party validation phase
+  forcePartySelection(duration) {
+    this.timeout_PartySelection = setTimeout(() => {
+      this.setPartySelection([]);
+    }, duration);
+  }
+
+  // Timout function for party validation phase
   forcePartyValidVote(duration) {
-    console.log("Forcing valid vote in 7 seconds");
     this.timeout_PartyValid = setTimeout(() => {
       for (let i = 0; i < this.users.length; i++) {
         if (!Object.keys(this.partyValidVotes).includes(this.users[i].id)) {
@@ -197,25 +205,67 @@ class GameSession {
     }, duration);
   }
 
+  // Timout function for party validation phase
+  forcePartyPassVote(duration) {
+    this.timeout_PartyPass = setTimeout(() => {
+      for (let i = 0; i < this.currentParty.length; i++) {
+        if (!Object.keys(this.partyPassVotes).includes(this.currentParty[i])) {
+          // Get the current user
+          const thisUser = this.users.find(
+            value => value.id === this.currentParty[i].id
+          );
+
+          // Force heroes to vote pass and minions to vote fail
+          this.setUserVote_PassParty(
+            thisUser,
+            ["Assassin", "Minion"].includes(this.roleAssignments[thisUser.id])
+              ? -1
+              : 1
+          );
+        }
+      }
+    }, duration);
+  }
+
   // Assign users to a candidate party
   setPartySelection(userArray) {
-    // Copy values from array
-    this.candidateParty = Array.from(userArray);
+    const partySize = this.quests[this.currentQuestIndex].partySize;
 
-    /** @todo implement invalid party handlers */
     // Trim out excess
-    if (userArray.length > this.quests[this.currentQuestIndex].partySize) {
+    if (userArray.length > partySize) {
+      userArray = userArray.splice(0, partySize);
     }
     // Fill missing slots
-    else if (userArray.length < this.quests[this.currentQuestIndex].partySize) {
+    else if (userArray.length < partySize) {
+      // If king is missing include king
+      const userKing = this.users[this.currentKingIndex];
+      if (!userArray.includes(userKing)) {
+        userArray.push(userKing);
+      }
+
+      // Fill in the remaining slots
+      while (userArray.length < partySize) {
+        // Pick random user and check if they are in the array already or not
+        const randIndex = Math.floor(Math.random() * this.users.length);
+        const randUser = this.users[randIndex];
+        if (!userArray.includes(randUser)) {
+          userArray.push(randUser);
+        }
+      }
     }
 
+    // Copy values from array and change phase
+    this.candidateParty = Array.from(userArray);
     this.currentPhase = "Party Validation";
     this.forcePartyValidVote(7000);
   }
 
   // Use the candidate party
-  setParty(userArray) {}
+  setParty(userArray) {
+    this.currentParty = Array.from(userArray);
+    this.currentPhase = "Party Voting";
+    this.forcePartyPassVote(7000);
+  }
 
   // Cast a vote on a party selection
   setUserVote_ValidParty(user, vote) {
@@ -248,25 +298,90 @@ class GameSession {
       // If the vote passes, then set the candidate as current party otherwise restart the vote
       if (numYes >= numNo) {
         this.setParty(this.candidateParty);
+        this.candidateParty = [];
+        this.partyValidVotes = {};
       } else {
         this.candidateParty = [];
         this.currentKingIndex = (this.currentKingIndex + 1) % this.users.length;
+        this.partyValidVotes = {};
         this.currentPhase = "Party Selection";
       }
     }
   }
 
   // Cast a vote on a party validation
-  setUserVote_PassParty(user, vote) {}
+  setUserVote_PassParty(user, vote) {
+    // If the phase is not correct return out
+    if (this.currentPhase !== "Party Voting") {
+      return false;
+    }
 
-  // Is the game waiting on a candidate party to be selected?
-  waitingOn_PartySelection() {}
+    // If user is not in the current party then return out
+    if (!this.currentParty.includes(user)) {
+      return false;
+    }
 
-  // Is the game waiting on a party to be agreed upon?
-  waitingOn_PartyValidVote() {}
+    // If vote isn't 1 or -1 then return out
+    if (Math.abs(vote) !== 1) {
+      return false;
+    }
 
-  // Is the game waiting on a party to vote?
-  waitingOn_PartyVote() {}
+    if (
+      ["Merlin", "Percival", "Hero"].includes(this.roleAssignments[user.id])
+    ) {
+      if (vote !== 1) {
+        console.log("Good Guys can't vote to fail parties");
+      }
+
+      this.partyPassVotes[user.id] = 1;
+    } else {
+      this.partyPassVotes[user.id] = vote;
+    }
+
+    // Check if all votes are cast
+    if (Object.keys(this.partyPassVotes).length === this.currentParty.length) {
+      // Change phase
+      clearTimeout(this.timeout_PartyPass);
+      this.currentPhase = "Computing";
+
+      // Count any fails
+      let numFails = 0;
+      let failed = false;
+      for (const t_key in this.partyPassVotes) {
+        if (this.partyPassVotes[t_key] === -1) {
+          numFails++;
+          if (this.quests[this.currentQuestIndex].requiredFails <= numFails) {
+            failed = true;
+            break;
+          }
+        }
+      }
+
+      // Increment counter if quest didn't fail
+      this.passedQuests += failed ? 0 : 1;
+      this.currentQuestIndex++;
+
+      // If all quests are done end game
+      if (this.currentQuestIndex === 5) {
+        this.gameOver = true;
+        this.currentPhase = "Game Over";
+      }
+      // If number of passed quests is met
+      else if (this.passedQuests === 3) {
+        this.gameOver = true;
+        this.currentPhase = "Game Over";
+      }
+      // Move to next quest
+      else {
+        this.currentPhase = "Party Selection";
+        this.partyPassVotes = {};
+        this.currentParty = [];
+        this.candidateParty = [];
+        this.currentKingIndex = (this.currentKingIndex + 1) % this.users.length;
+        this.forcePartySelection(5000);
+      }
+    }
+  }
 }
 
 module.exports = { GameSession: GameSession };
