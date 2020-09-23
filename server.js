@@ -9,7 +9,15 @@ const cors = require("cors");
 const PORT = process.env.PORT || 8080;
 const db = require("./models");
 
-// Setup express app with middle configurations
+// Setup session middleware
+const sessionMiddleware = session({
+  name: "Avalon App User",
+  secret: "Scorpion Samurai",
+  resave: true,
+  saveUninitialized: true
+});
+
+// Setup express app with configurations
 const app = express();
 app.use(cors());
 app.options("*", cors());
@@ -18,7 +26,7 @@ app.use(express.json());
 app.use(express.static("public"));
 
 // Integrate express-session and passport to allow the authentication middleware
-app.use(session({ secret: "arthur", resave: true, saveUninitialized: true }));
+app.use(sessionMiddleware);
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -37,7 +45,7 @@ db.sequelize.sync().then(() => {
   });
 
   // Load the socket
-  const socket = require("./config/socket")(server, passport, session);
+  const socket = require("./config/socket")(server, sessionMiddleware);
   socket.on("error", message => {
     console.log(message);
   });
