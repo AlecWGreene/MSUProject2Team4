@@ -94,7 +94,6 @@ class GameSession {
     this.roleAssignments = {};
     this.passedQuests = 0;
     this.currentQuestIndex = -1;
-    this.numberPartyVotes = 0;
     this.candidateParty = [];
     this.currentParty = [];
     this.partyPassVotes = {};
@@ -115,7 +114,7 @@ class GameSession {
     // Set quests and roles
     this.quests = this.questCriteria.medium;
     this.numMinions =
-      customSettings.gameSize && customSettings.gameSize != "medium"
+      customSettings.gameSize && customSettings.gameSize !== "medium"
         ? customSettings.gameSize === "large"
           ? 4
           : 2
@@ -347,8 +346,8 @@ class GameSession {
       // Count any fails
       let numFails = 0;
       let failed = false;
-      for (const t_key in this.partyPassVotes) {
-        if (this.partyPassVotes[t_key] === -1) {
+      for (const tempUser in this.partyPassVotes) {
+        if (this.partyPassVotes[tempUser] === -1) {
           numFails++;
           if (this.quests[this.currentQuestIndex].requiredFails <= numFails) {
             failed = true;
