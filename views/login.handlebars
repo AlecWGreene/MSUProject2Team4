@@ -1,9 +1,11 @@
   <style>
     body {
-    background-image: url('../public/assets/background-castle-3.jpg');
+    background-image: url('/assets/img/background-castle-3.jpg');
     background-repeat: no-repeat;
     background-size: cover;
-    background-position: center; 
+    background-position: center;
+    /* Fixed background */
+    background-attachment: fixed;
     height: 950px;
     }
   </style>
@@ -16,12 +18,16 @@
         <h2>Login</h2>
         <form class="login">
           <div class="form-group">
-            <label for="exampleInputEmail1">Email address</label>
+            <label for="username-input">User Name</label>
+            <input type="text" class="form-control" id="username-input" placeholder="username123">
+          </div>
+          <div class="form-group">
+            <label for="email-input">Email address</label>
             <input type="email" class="form-control" id="email-input" placeholder="email@example.com">
           </div>
           <div class="form-group">
-            <label for="exampleInputPassword1">Password</label>
-            <input type="password" class="form-control" id="password-input" placeholder="Password">
+            <label for="password-input">Password</label>
+            <input type="password" class="form-control" id="password-input" autocomplete="off" placeholder="password">
           </div>
           <button type="submit" class="btn btn-dark" style="font-size: 12px; font-family: 'Roboto Slab', serif;">Login</button>
         </form>
@@ -33,4 +39,4 @@
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script type="text/javascript" src="js/login.js"></script>
+  <script type="text/javascript" src="assets/js/login.js"></script>

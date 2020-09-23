@@ -9,7 +9,7 @@ module.exports = function(app) {
   app.post("/api/login", passport.authenticate("local"), (req, res) => {
     // Sending back a password, even a hashed password, isn't a good idea
     res.json({
-      email: req.user.email,
+      username: req.user.username,
       id: req.user.id
     });
   });
@@ -19,8 +19,10 @@ module.exports = function(app) {
   // otherwise send back an error
   app.post("/api/signup", (req, res) => {
     db.User.create({
+      username: req.body.username,
       email: req.body.email,
       password: req.body.password
+      // lobbyID: req.body.lobby
     })
       .then(() => {
         res.redirect(307, "/api/login");
@@ -45,9 +47,26 @@ module.exports = function(app) {
       // Otherwise send back the user's email and id
       // Sending back a password, even a hashed password, isn't a good idea
       res.json({
-        email: req.user.email,
+        username: req.user.username,
         id: req.user.id
       });
     }
+  });
+
+  // Route for deleting user account
+  app.delete("/api/user_data/:id", (req, res) => {
+    // var delUser = "id = " + req.params.id;
+
+    db.User.destroy({
+      where: {
+        id: req.params.id
+      }
+    })
+      .then(() => {
+        res.redirect("/");
+      })
+      .catch(err => {
+        res.status(401).json(err);
+      });
   });
 };
