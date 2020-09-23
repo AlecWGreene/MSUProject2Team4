@@ -21,33 +21,33 @@ function chatSubmitHandler(event) {
 
 // Display a message when a lobby member connects
 function connectionHandler(data) {
-  $chatDisplay.append($("<li>").text(data.user.id + " has connected"));
+  $chatDisplay.append($("<li>").text(data.user.username + " has connected"));
 }
 
 // Display a message when a lobby member disconnects
 function disconnectionHandler(data) {
-  $chatDisplay.append($("<li>").text(data.user.id + " has disconnected"));
+  $chatDisplay.append($("<li>").text(data.user.username + " has disconnected"));
 }
 
 // Sends a user's message to lobby
 function messageHandler(data) {
-  const $messagae = $("<li>");
+  const $message = $("<li>");
 
   // Append the username to the message
-  $messagae.append(
+  $message.append(
     $("<span>")
-      .text(data.user.id)
+      .text(data.user.username + ": ")
       .addClass(chatPrependTextClass)
   );
 
   // Display the message
-  $messagae.append(
+  $message.append(
     $("<span>")
       .text(data.message)
       .addClass(chatTextClass)
   );
 
-  $chatDisplay.append($messagae);
+  $chatDisplay.append($message);
 }
 
 // Add event listeners on disconnect and emit a connection message
