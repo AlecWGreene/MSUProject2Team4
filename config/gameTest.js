@@ -7,9 +7,12 @@ const testSession = new GameSession("AB12CD34", {});
 
 console.dirxml(testSession);
 
+let time  = 0;
 function testFn(){
+    console.clear();
     console.log(`
 ==================== Game Phase: ${testSession.currentPhase} ====================
+Game Time: ${time+=0.5}s
 
 -------------------- Waiting On -------------------------------------------------
 Party Selection: ${testSession.waitingOn_PartySelection()}
@@ -22,15 +25,26 @@ Number of Passed Quests: ${testSession.passedQuests}
 -------------------- Current Quest -------------------------------------------------
 King: ${testSession.users[testSession.currentKingIndex].username}
 Members: ${testSession.currentParty.join(", ")}
+Party Size: ${testSession.quests[testSession.currentQuestIndex].partySize}
+Required Fails: ${testSession.quests[testSession.currentQuestIndex].requiredFails}
 
 -------------------- Party Vote  -------------------------------------------------
 Votes: ${JSON.stringify(testSession.partyVotes)}
 
 -------------------- Party Valid Vote -------------------------------------------------
-Potential Members: ${JSON.stringify(testSession.candidateParty)}
+Potential Members: ${testSession.candidateParty.map(value => value.username).join(", ")}
 Number of Approvals: ${JSON.stringify(testSession.partyValidVotes)}
 
 `);
 }
 
 setInterval(testFn, 500);
+
+setTimeout(function(){
+    
+}, 5000);
+
+// First party selection
+setTimeout(function(){
+    testSession.setPartySelection(testSession.users.filter((value,index) => [1,2,6].includes(index)));
+}, 5000);
