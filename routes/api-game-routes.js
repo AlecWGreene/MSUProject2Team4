@@ -33,8 +33,11 @@ module.exports = function(app, sessionManager: SessionManager) {
             res.status(402);
         }
 
-        // Return party selection
-        // let sessionManager.sessionDirectory[req.params.lobbyCode].users;
+        // Send party selection
+        // let currentSession = sessionManager.sessionDirectory[req.params.lobbyCode];
+        // let userArray = Array.from(currentSession.users);
+        // let partyArray = userArray.filter(user => req.body.userArray.includes(user.id));
+        // currentSession.setPartySelection(partyArray);
         res.json(req.body.userArray);
     }
   );
