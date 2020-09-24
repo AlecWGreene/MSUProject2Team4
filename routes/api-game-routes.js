@@ -1,7 +1,7 @@
 const db = require("../models");
 const passport = require("../config/passport");
 
-module.exports = function(app) {
+module.exports = function(app, sessionManager: SessionManager) {
   // GET Route -- game/run
   app.get(
     "/api/game/:lobbyCode/run",
@@ -28,7 +28,14 @@ module.exports = function(app) {
     "/api/game/:lobbyCode/partySelection",
     passport.authenticate("local"),
     (req, res) => {
-        
+        // If no user array is passed
+        if(!req.body.userArray){
+            res.status(402);
+        }
+
+        // Return party selection
+        // let sessionManager.sessionDirectory[req.params.lobbyCode].users;
+        res.json(req.body.userArray);
     }
   );
 
