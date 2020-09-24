@@ -3,15 +3,14 @@ const { GameSession: GameSession } = require("./gameSession.js");
 class SessionManager {
   constructor() {
     this.sessionDictionary = {};
-    
   }
 
-  static getInstance(){
-    if(){
+  static getInstance() {
+    if (SessionManager.instance === null) {
       const sessionManager = new SessionManager();
-      this.instance = sessionManager;
+      SessionManager.instance = sessionManager;
     }
-    return this.instance;
+    return SessionManager.instance;
   }
 
   createSession(lobbyCode, customSettings) {
@@ -29,6 +28,6 @@ class SessionManager {
   }
 }
 
-SessionManager
+SessionManager.instance = null;
 
 module.exports = SessionManager;

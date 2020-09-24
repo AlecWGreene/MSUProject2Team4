@@ -1,3 +1,5 @@
+/* eslint-disable no-empty-function */
+/* eslint-disable no-unused-vars */
 const db = require("../models");
 const passport = require("../config/passport");
 
@@ -24,22 +26,19 @@ module.exports = function(app, sessionManager) {
   );
 
   // POST Route -- game/partySelection
-  app.post(
-    "/api/game/:lobbyCode/partySelection",
-    (req, res) => {
-        // If no user array is passed
-        if(!req.body.userArray){
-            res.status(402);
-        }
-
-        // Send party selection
-        // let currentSession = sessionManager.sessionDirectory[req.params.lobbyCode];
-        // let userArray = Array.from(currentSession.users);
-        // let partyArray = userArray.filter(user => req.body.userArray.includes(user.id));
-        // currentSession.setPartySelection(partyArray);
-        res.json(req.body.userArray);
+  app.post("/api/game/:lobbyCode/partySelection", (req, res) => {
+    // If no user array is passed
+    if (!req.body.userArray) {
+      res.status(402);
     }
-  );
+
+    // Send party selection
+    // let currentSession = sessionManager.sessionDirectory[req.params.lobbyCode];
+    // let userArray = Array.from(currentSession.users);
+    // let partyArray = userArray.filter(user => req.body.userArray.includes(user.id));
+    // currentSession.setPartySelection(partyArray);
+    res.json(req.body.userArray);
+  });
 
   // GET Route -- game/state
   app.get(

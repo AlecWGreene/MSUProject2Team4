@@ -1,3 +1,4 @@
 models/index.js
 node_modules
 config/gameTest.js
+public/
