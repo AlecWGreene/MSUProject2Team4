@@ -65,10 +65,10 @@ function getPartySelectModal(userArray) {
   // Set the buttons
   const finishBtn = $("<button>")
     .addClass("modal-button")
-    .attr("id", "finish-button");
+    .attr("id", "finish-button").text("Finish");
   const resetBtn = $("<button>")
     .addClass("modal-button")
-    .attr("id", "reset-button");
+    .attr("id", "reset-button").text("Reset");
   $($(modal).children()[2])
     .append(finishBtn)
     .append(resetBtn);
@@ -94,10 +94,10 @@ function getPartyValidVoteModal(message) {
   // Set the buttons
   const vetoBtn = $("<button>")
     .addClass("modal-button")
-    .attr("id", "veto-button");
+    .attr("id", "veto-button").text("Veto");
   const approveBtn = $("<button>")
     .addClass("modal-button")
-    .attr("id", "approve-button");
+    .attr("id", "approve-button").text("Approve");
   $($(modal).children()[2])
     .append(vetoBtn)
     .append(approveBtn);
@@ -124,10 +124,10 @@ function getPartyPassVoteModal() {
   // Set the buttons
   const failBtn = $("<button>")
     .addClass("modal-button")
-    .attr("id", "fail-button");
+    .attr("id", "fail-button").text("Fail");
   const passBtn = $("<button>")
     .addClass("modal-button")
-    .attr("id", "pass-button");
+    .attr("id", "pass-button").text("Pass");
   $($(modal).children()[2])
     .append(failBtn)
     .append(passBtn);
