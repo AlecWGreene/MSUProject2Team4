@@ -43,6 +43,7 @@ app.set("view engine", "handlebars");
 // Load our routes
 require("./routes/html-routes.js")(app);
 require("./routes/api-routes.js")(app);
+require("./routes/api-game-routes")(app, {});
 
 // Sync to the database then start the app
 db.sequelize.sync().then(() => {

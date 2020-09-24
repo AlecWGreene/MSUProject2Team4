@@ -1,0 +1,48 @@
+  <style>
+    body {
+    background-image: url('/assets/img/background-castle-3.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    /* Fixed background */
+    background-attachment: fixed;
+    height: 950px;
+    }
+  </style>
+
+<!-- Signup Container -->
+<div class="container">
+  <div class="row">
+    <div class="col-md-4 col-md-offset-4 border" style="font-size: 15px; font-weight: bold; font-family: 'Roboto Slab', serif; background-color: #f1f1f1af; border-radius: 25px; margin-top: 200px;">
+      <br>
+      <h2>Sign up</h2>
+     <form class="signup">
+          <div class="form-group">
+            <label for="username-input">User Name</label>
+            <input type="text" class="form-control" id="username-input" placeholder="username123">
+          </div>
+          <div class="form-group">
+            <label for="email-input">Email address</label>
+            <input type="email" class="form-control" id="email-input" placeholder="example@email.com">
+          </div>
+          <div class="form-group">
+            <label for="password-input">Password</label>
+            <input type="password" class="form-control" id="password-input" autocomplete="off" placeholder="Enter password">
+          </div>
+          <div style="display: none" id="alert" class="alert alert-danger" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            <span class="sr-only">Error:</span> <span class="msg"></span>
+          </div>
+          <button type="submit" class="btn btn-default">Sign Up</button>
+        </form>
+        <br />
+        <p>Or log in <a href="/login">here</a></p>
+      <br />
+    </div>
+  </div>
+</div>  
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript" src="/assets/js/signup.js"></script>
