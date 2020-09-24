@@ -11,35 +11,37 @@ module.exports = function(app) {
 
   // POST Route -- game/validVote
   app.post(
-    "/api/game/:lobbyCode/run",
+    "/api/game/:lobbyCode/validVote",
     passport.authenticate("local"),
     (req, res) => {}
   );
 
   // POST Route -- game/passVote
   app.get(
-    "/api/game/:lobbyCode/run",
+    "/api/game/:lobbyCode/passVote",
     passport.authenticate("local"),
     (req, res) => {}
   );
 
   // POST Route -- game/partySelection
-  app.get(
-    "/api/game/:lobbyCode/run",
+  app.post(
+    "/api/game/:lobbyCode/partySelection",
     passport.authenticate("local"),
-    (req, res) => {}
+    (req, res) => {
+        
+    }
   );
 
   // GET Route -- game/state
   app.get(
-    "/api/game/:lobbyCode/run",
+    "/api/game/:lobbyCode/state",
     passport.authenticate("local"),
     (req, res) => {}
   );
 
   // GET Route -- game/users
   app.get(
-    "/api/game/:lobbyCode/run",
+    "/api/game/:lobbyCode/users",
     passport.authenticate("local"),
     (req, res) => {}
   );
