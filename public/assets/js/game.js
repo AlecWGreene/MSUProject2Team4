@@ -60,23 +60,20 @@ function getPartySelectModal(userArray) {
       .text(user.username);
     choiceBody.append(userItem);
   }
-  $($(modal).children()[1]);
+  $($(modal).children()[1]).append(choiceBody);
 
   // Set the buttons
   const finishBtn = $("<button>")
     .addClass("modal-button")
-    .attr("id", "finish-button").text("Finish");
+    .attr("id", "finish-button")
+    .text("Finish");
   const resetBtn = $("<button>")
     .addClass("modal-button")
-    .attr("id", "reset-button").text("Reset");
+    .attr("id", "reset-button")
+    .text("Reset");
   $($(modal).children()[2])
     .append(finishBtn)
     .append(resetBtn);
-
-  // Register event handlers
-  $("selection-item").on("click", partySelectionItemToggle);
-  $("finish-button").on("click", partySelectionFinishHandler);
-  $("reset-button").on("click", partySelectionResetHandler);
 
   return modal;
 }
@@ -94,17 +91,15 @@ function getPartyValidVoteModal(message) {
   // Set the buttons
   const vetoBtn = $("<button>")
     .addClass("modal-button")
-    .attr("id", "veto-button").text("Veto");
+    .attr("id", "veto-button")
+    .text("Veto");
   const approveBtn = $("<button>")
     .addClass("modal-button")
-    .attr("id", "approve-button").text("Approve");
+    .attr("id", "approve-button")
+    .text("Approve");
   $($(modal).children()[2])
     .append(vetoBtn)
     .append(approveBtn);
-
-  // Register event handlers
-  $("veto-button").on("click", partyValidVoteVetoHandler);
-  $("approve-button").on("click", partyValidVoteApproveHandler);
 
   return modal;
 }
@@ -124,19 +119,33 @@ function getPartyPassVoteModal() {
   // Set the buttons
   const failBtn = $("<button>")
     .addClass("modal-button")
-    .attr("id", "fail-button").text("Fail");
+    .attr("id", "fail-button")
+    .text("Fail");
   const passBtn = $("<button>")
     .addClass("modal-button")
-    .attr("id", "pass-button").text("Pass");
+    .attr("id", "pass-button")
+    .text("Pass");
   $($(modal).children()[2])
     .append(failBtn)
     .append(passBtn);
 
-  // Register event handlers
-  $("fail-button").on("click", partyPassVoteFailHandler);
-  $("pass-button").on("click", partyPassVotePassHandler);
-
   return modal;
+}
+
+function addEventHandlers(modalName) {
+  // Register event handlers
+  switch (modalName) {
+  case "Party Select":
+    $(".selection-item").on("click", partySelectionItemToggle);
+    $("#finish-button").on("click", partySelectionFinishHandler);
+    $("#reset-button").on("click", partySelectionResetHandler);
+  case "Party Valid Vote":
+      $("#veto-button").on("click", partyValidVoteVetoHandler);
+    $("#approve-button").on("click", partyValidVoteApproveHandler);
+    case "Party Pass Vote":
+    $("#fail-button").on("click", partyPassVoteFailHandler);
+      $("#pass-button").on("click", partyPassVotePassHandler);
+  }
 }
 
 // =============== Runtime ===============

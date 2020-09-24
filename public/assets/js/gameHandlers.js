@@ -19,15 +19,14 @@ function partySelectionItemToggle(event) {
 
 function partySelectionFinishHandler(event) {
 
-    let userArray = $(".selection-item-active").map(item => $(item).data("id"));
+    let userArray = Object.values($(".selection-item")).splice(0,Object.values($(".selection-item")).length - 4).map(item => $(item).data("id"));
 
     console.log(userArray);
 
   $.post("/api/game/aaaa/partySelection", {
-    userIds: userArray
+    userArray: userArray 
   })
     .then(() => {
-      window.location.replace("/home");
       // If there's an error, log the error
     })
     .fail(err => {

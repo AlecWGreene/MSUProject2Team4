@@ -32,7 +32,7 @@ $(document).ready(() => {
         window.location.replace("/home");
         // If there's an error, log the error
       })
-      .catch(err => {
+      .fail(err => {
         console.log(err);
       });
   }
