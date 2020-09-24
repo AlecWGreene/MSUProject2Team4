@@ -228,7 +228,7 @@ class GameSession {
 
   // Assign users to a candidate party
   setPartySelection(userArray) {
-    if(this.currentPhase !== "Party Selection"){
+    if (this.currentPhase !== "Party Selection") {
       return false;
     }
     const partySize = this.quests[this.currentQuestIndex].partySize;
@@ -264,7 +264,7 @@ class GameSession {
 
   // Use the candidate party
   setParty(userArray) {
-    if(this.currentPhase !== "Party Selection"){
+    if (this.currentPhase !== "Party Selection") {
       return false;
     }
 
