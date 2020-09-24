@@ -1,36 +1,84 @@
 <style>
     body {
-    background-image: url('../public/assets/img/library-1.jpg');
+    background-image: url('../Drafts/assets/library-1.jpg');
     background-repeat: no-repeat;
+    /* background-attachment: fixed; */
     background-size: cover;
     background-position: center; 
     height: 950px;
     }
-</style>
+
+    p {
+    font-size: 15px; font-family: 'Roboto Slab', serif;
+    }
+    </style>
+</head>
+
+<body>
+ 
+<!-- Nav Bar -->
+  <nav class="navbar navbar-dark bg-dark">
+    <div class="container-fluid">
+      <div class="navbar-header">
+          <a class="text-white" style="font-size: 50px; font-family: 'Grenze Gotisch', cursive;">Avalon</a>
+      </div>
+    </div>
+  </nav>
 
 <!-- Rules Container -->
   <div class="container">
     <div class="row">
       <div class="col-md-6 col-md-offset-3 border" style="font-size: 30px; font-weight: bold; font-family: 'Roboto Slab', serif; background-color: #f1f1f1e8; border-radius: 25px; margin-top: 200px;">
         <br>
-        <h2>Rules</h2>
-        <p style="font-size: 20px; font-family: 'Roboto Slab', serif;"> Objective</p>
-        <p style="font-size: 15px; font-family: 'Roboto Slab', serif;"> Avalon is an online game for 5-10 people where each player is randomly given a role by being dealt a card face down. 
-            Players on the mission are given 2 cards and secretly choose one of them, “succeed” or “fail.” The good team always wants the
-            mission to succeed. Evil team members on a mission can choose either succeed or fail.</p>
-        <hr>
-        <p style="font-size: 20px; font-family: 'Roboto Slab', serif;">The Cards & Tokens</p>
-        <hr>
-        <p style="font-size: 20px; font-family: 'Roboto Slab', serif;">Game Play</p>
-        <hr>
-        <p style="font-size: 20px; font-family: 'Roboto Slab', serif;">Quest Phase</p>
-        <hr>
-        <p style="font-size: 20px; font-family: 'Roboto Slab', serif;">Game End</p>
-        <hr>
-        <p style="font-size: 10px; font-family: 'Roboto Slab', serif;">For full game details, visit <a href="https://avalon.fun/pdfs/rules.pdf" target="popup">here</a></p>  
+        <div class="module">
+          <h2>Rules</h2>
+          <p style="font-size: 20px;"> Objective</p>
+          <p> Traditionally a beloved card game, Avalon is now available in an unofficial online version. 
+            Played by 5-10 people, players are either Loyal Servants of Arthur fighting for Goodness and honor or aligned with the Evil ways of Mordred. 
+            Good wins the game by successfully completing three Quests. Evil wins if three Quests end in failure. Evil can also win by assasinating Merlin at game's end 
+            or if a Quest cannot be undertaken.</p>
+          <p> Players may take any claims during the game, at any point in the game. Discussion, deception, accusation, and logical deducation are all equally important in
+            order for Good to prevail or Evil to rule the day.</p>
+          <hr>
+          <p style="font-size: 20px;">The Cards & Tokens</p>
+          <p><i>Characters Cards:</i> Determine the player's loyalty <i>(each player is either Good or Evil</i>. Character Cards
+          on the side of Good have Arthur's sigil on blue background. Some Characters have special powers during the game -- Merlin and the Assasin are included in all games and the remaining
+          special character cards are optional.</p>
+          <p><i>A player's Character Card may not be revealed at any point in the game, nor the character art discussed.</i></p>
+          <p><i>Leader Token:</i> Designates the player that will propose the Quest Team.</p>
+          <p><i>Team Tokens:</i> Allocate positions on the Quest Team.</p>
+          <p><i>Vote Tokens:</i> Approve or reject the Leader's proposed Quest Team.</p>
+          <p><i>Quest Cards:</i> Determine a Quest's success or failure.</p>
+          <hr>
+          <p style="font-size: 20px;">Game Play</p>
+          <p>The game consists of several Rounds; each Round has a Team Building phase and a Quest phase. In the Team Building phase the Leader proposes a Team to complete a Quest -- all the players
+            will either approve the proposed Team and move to the Quest phase, or reject the proposed Team passing leadership to the next player and repeating the process until a Team
+            is approved. In the Quest phase the players selected to be on the Team wkill determine if the Quest is successful.</p>
+          <p>Choose your Team wisely. Approve only Teams where you trust everyone. Even a single <i>Evil</i> player on the team is enough for failure.</p>
+          <hr>
+          <p style="font-size: 20px;">Team Building Phase</p>
+          <p>After appropriate discussion, the Leader takes the required number of Team Tokens and assigns each Team Token to any player. The Leader can be on the Team, but is not
+            required to be so. Note a player may only be assigned one Team Token.</p>
+          <p>Each player, including the Leader, secretly selects one Vote card. When all players have their selected Vote card ready, the Leader asks for the Votes to be revealed.
+            All Vote tokens are revealed so everyone can see how you voted. The Team is approved if the majority accepts. If the Team is approved, play continues in the Quest phase. If the Team 
+            is rejected <i>(a tied Vote is also rejections),</i> the Leader passes clockwise and the Team building phase is repeated.</p>
+          <p><i>Evil</i> wins the game if five Teams are rejected in a single round <i>(5 consecutive failed Votes)</i></p>
+          <hr>
+          <p style="font-size: 20px;">Game End</p>
+          <p>The Leader passes a set of Quests cards to each Team member. Each player on the Quest selects a Quest card and plays it face down in front of themselves. The Leader collects
+            and the played Quest Cards are shuffled before revealing. The Quest is completed successfully only if all the cards revealed are Success cards. The Quest fails if one <i>(or more)</i> Fail cards have been played.</p>
+            <p style="font-size: 20px;">Game End</p>
+          <p>The game ends immediately after either three successful or three failed Quests. The <i>Evil</i> players win if three Quests fail. The game also ends immediately and
+          the <i>Evil</i> players win if five Teams are rejected in a single round <i>(5 consecutive failed Votes)</i></p>
+          <p><i>Assasinate Merlin -- Evil's Last Chance</i></p>
+          <p>If three Quests are completed succcessfully, the <i>Evil</i> players will have a final opportunity to win the game by correctly naming which of the <i>Good</i> players is Merlin.
+          Without revealing any Character cards, the <i>Evil</i> players discuss the player with the Assasin character card will name one <i>Good</i> player as Merlin. If the player
+          is Merlin, then <i>Evil</i> players win. If the <i>Evil</i> players do not name Merlin then the <i>Good</i> players win.</p>
+          <hr>
+          <p style="font-size: 12px;">For full game details, visit <a href="https://avalon.fun/pdfs/rules.pdf" target="popup">here</a></p>  
+        </div>
       </div>
     </div>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  {{!-- <script type="text/javascript" src="js/login.js"></script> --}}
