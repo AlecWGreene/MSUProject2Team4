@@ -19,3 +19,7 @@ background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75
 body {
 cursor: url(http://www.rw-designer.com/cursor-extern.php?id=122464), auto;
 };
+
+ul {
+  list-style: none;
+}
