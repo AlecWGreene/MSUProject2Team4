@@ -1,3 +1,4 @@
+/* Vanilla Stylesheet */
 form.signup,
 form.login {
   margin-top: 50px;
@@ -20,6 +21,6 @@ body {
 cursor: url(http://www.rw-designer.com/cursor-extern.php?id=122464), auto;
 };
 
-ul {
-  list-style: none;
+ul, li {
+  list-style-type: none;
 }
