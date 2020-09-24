@@ -14,7 +14,10 @@ const sessionMiddleware = session({
   name: "Avalon App User",
   secret: "Scorpion Samurai",
   resave: true,
-  saveUninitialized: true
+  saveUninitialized: true,
+  cookie: {
+    maxAge: 1500000
+  }
 });
 
 // Setup express app with configurations
@@ -43,7 +46,7 @@ app.set("view engine", "handlebars");
 // Load our routes
 require("./routes/html-routes.js")(app);
 require("./routes/api-routes.js")(app);
-require("./routes/api-game-routes")(app, {});
+require("./routes/api-game-routes")(app, require("./config/sessionManager"));
 
 // Sync to the database then start the app
 db.sequelize.sync().then(() => {
