@@ -16,7 +16,14 @@ function userDisconnectHandler() {
 function messageHandler(chatMessage) {
   this.nsp.emit("chat message", {
     user: this.request.session.passport.user,
-    message: chatMessage
+    message: chatMessage,
+    timeStamp:
+      (new Date().getHours() % 12) +
+      ":" +
+      new Date().getMinutes().toLocaleString("en-US", {
+        minimumIntegerDigits: 2,
+        useGrouping: false
+      })
   });
 }
 
