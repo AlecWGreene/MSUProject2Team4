@@ -116,6 +116,22 @@ class GameSession {
     this.maxDuration_partyValidVote = 10000;
     this.maxDuration_partyPassVote = 10000;
 
+    // Apply specified timeouts
+    if (customSettings.timeLimits) {
+      if (customSettings.timeLimits.partySelection) {
+        this.maxDuration_partySelection =
+          customSettings.timeLimits.partySelection;
+      }
+      if (customSettings.timeLimits.partyValidVote) {
+        this.maxDuration_partyValidVote =
+          customSettings.timeLimits.partyValidVote;
+      }
+      if (customSettings.timeLimits.partyPassVote) {
+        this.maxDuration_partyPassVote =
+          customSettings.timeLimits.partyPassVote;
+      }
+    }
+
     // Set quests and roles
     this.quests = this.questCriteria.medium;
     this.numMinions =
@@ -275,7 +291,7 @@ class GameSession {
     // Copy values from array and change phase
     this.candidateParty = Array.from(userArray);
     this.currentPhase = "Party Validation";
-    this.forcePartyValidVote(7000);
+    this.forcePartyValidVote(this.maxDuration_partyValidVote);
   }
 
   // Use the candidate party
@@ -292,7 +308,7 @@ class GameSession {
     this.currentParty = Array.from(userArray);
     this.prevPartyValidVotes = this.partyValidVotes;
     this.partyValidVotes = {};
-    this.forcePartyPassVote(7000);
+    this.forcePartyPassVote(this.maxDuration_partyPassVote);
   }
 
   // Cast a vote on a party selection
@@ -335,7 +351,7 @@ class GameSession {
         this.currentPhase = "Party Selection";
         this.prevPartyValidVotes = this.partyValidVotes;
         this.partyValidVotes = {};
-        this.forcePartySelection(5000);
+        this.forcePartySelection(this.maxDuration_partySelection);
       }
     }
   }
@@ -410,7 +426,7 @@ class GameSession {
         this.partyPassVotes = {};
         this.candidateParty = [];
         this.currentKingIndex = (this.currentKingIndex + 1) % this.users.length;
-        this.forcePartySelection(5000);
+        this.forcePartySelection(this.maxDuration_partySelection);
       }
     }
   }
