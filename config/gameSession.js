@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 "use strict";
 
 class GameSession {
@@ -85,6 +86,8 @@ class GameSession {
     this.timeout_PartyPass = null;
 
     // Game variables
+    this.numFails = 0;
+    this.questResults = [];
     this.currentPhase = "";
     this.currentParty = [];
     this.users = [];
@@ -264,7 +267,11 @@ class GameSession {
 
   // Use the candidate party
   setParty(userArray) {
-    if (this.currentPhase !== "Party Selection") {
+    if (
+      this.currentPhase !== "Computing" &&
+      this.candidateParty.length ===
+        this.quests[this.currentQuestIndex].partySize
+    ) {
       return false;
     }
 
@@ -304,12 +311,12 @@ class GameSession {
       // If the vote passes, then set the candidate as current party otherwise restart the vote
       if (numYes >= numNo) {
         this.setParty(this.candidateParty);
+        this.numFails = 0;
         this.candidateParty = [];
-        this.partyValidVotes = {};
+        this.currentPhase = "Party Voting";
       } else {
         this.candidateParty = [];
         this.currentKingIndex = (this.currentKingIndex + 1) % this.users.length;
-        this.partyValidVotes = {};
         this.currentPhase = "Party Selection";
       }
     }
@@ -364,6 +371,7 @@ class GameSession {
       }
 
       // Increment counter if quest didn't fail
+      this.questResults[this.currentQuestIndex] = failed ? -1 : 1;
       this.passedQuests += failed ? 0 : 1;
       this.currentQuestIndex++;
 
@@ -381,7 +389,6 @@ class GameSession {
       else {
         this.currentPhase = "Party Selection";
         this.partyPassVotes = {};
-        this.currentParty = [];
         this.candidateParty = [];
         this.currentKingIndex = (this.currentKingIndex + 1) % this.users.length;
         this.forcePartySelection(5000);
@@ -390,4 +397,69 @@ class GameSession {
   }
 }
 
-module.exports = { GameSession: GameSession };
+class GameState {
+  constructor(session) {
+    this.phases = session.phases;
+    this.questCriteria = session.questCriteria;
+
+    // Game variables
+    this.numFails = session.numFails;
+    this.questResults = session.questResults;
+    this.currentPhase = session.currentPhase;
+    this.currentParty = session.currentParty;
+    this.users = session.users;
+    this.currentKingIndex = session.currentKingIndex;
+    this.gameOver = session.gameOver;
+    this.quests = session.quests;
+    this.roleAssignments = session.roleAssignments;
+    this.passedQuests = session.passedQuests;
+    this.currentQuestIndex = session.currentQuestIndex;
+    this.candidateParty = session.candidateParty;
+    this.currentParty = session.currentParty;
+    this.partyPassVotes = session.partyPassVotes;
+    this.partyValidVotes = session.partyValidVotes;
+  }
+
+  debug_displaySession() {
+    return this;
+  }
+
+  getPhaseInfo() {
+    const data = {};
+
+    // Get phase and structure object with phase data
+    data.phase = this.currentPhase;
+    data.king = this.users[this.currentKingIndex];
+    switch (data.phase) {
+      case "Party Selection":
+        // Show previous quest result
+        if (this.currentQuestIndex !== 0) {
+          data.prevParty = this.currentParty;
+          data.prevFails = this.numFails;
+        }
+        break;
+      case "Party Validation":
+        // Show candidate party
+        const users = this.users;
+        data.party = this.candidateParty;
+        break;
+      case "Party Voting":
+        // Show who voted to send the party
+        data.party = this.currentParty;
+        data.votes = {};
+        for (const user of this.users) {
+          data.votes[user.username] = this.partyValidVotes[user.id];
+        }
+        break;
+      case "Computing":
+        break;
+      case "Game Over":
+        data.quests = this.questResults;
+        break;
+    }
+
+    return data;
+  }
+}
+
+module.exports = { GameSession: GameSession, GameState: GameState };
