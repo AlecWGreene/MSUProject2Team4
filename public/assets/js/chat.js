@@ -6,6 +6,7 @@ const $chatDisplay = $("#chat-messages");
 // CSS References
 const chatTextClass = "chatText";
 const chatPrependTextClass = "chatPrepend";
+const timeStampClass = "timestampPrepend";
 
 // Connect to lobby namespace
 const lobbyKey = "aaaa";
@@ -32,6 +33,13 @@ function disconnectionHandler(data) {
 // Sends a user's message to lobby
 function messageHandler(data) {
   const $message = $("<li>");
+
+  // Append timestamp to the message
+  $message.append(
+    $("<span>")
+      .text(data.timeStamp)
+      .addClass(timeStampClass)
+  );
 
   // Append the username to the message
   $message.append(
