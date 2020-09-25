@@ -20,6 +20,15 @@ module.exports = function(app) {
     res.render("login");
   });
 
+  app.get("/signup", (req, res) => {
+    // If the user already has an account send them to the members page
+    if (req.user) {
+      res.redirect("/home");
+    }
+    // res.sendFile(path.join(__dirname, "../public/login.html"));
+    res.render("signup");
+  });
+
   // Here we've add our isAuthenticated middleware to this route.
   // If a user who is not logged in tries to access this route they will be redirected to the signup page
   app.get("/home", isAuthenticated, (req, res) => {
@@ -28,6 +37,11 @@ module.exports = function(app) {
 
   // Render games page
   app.get("/games", isAuthenticated, (req, res) => {
-    res.render("games");
+    res.render("games", { layout: "userPage" });
+  });
+
+  // Render lobby page
+  app.get("/lobby", isAuthenticated, (req, res) => {
+    res.render("lobby", { layout: "lobbyPage" });
   });
 };

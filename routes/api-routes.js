@@ -44,7 +44,7 @@ module.exports = function(app) {
   });
 
   // Route for logging user out
-  app.get("/logout", (req, res) => {
+  app.get("/api/logout", (req, res) => {
     req.logout();
     res.redirect("/");
   });
@@ -75,6 +75,37 @@ module.exports = function(app) {
     })
       .then(() => {
         res.redirect("/");
+      })
+      .catch(err => {
+        res.status(401).json(err);
+      });
+  });
+
+  app.get("/api/lobby", (req, res) => {
+    const renderPartial = {
+      layout: "lobbyPage",
+      allPlayers: [],
+      allLobbies: []
+    };
+    db.User.findAll({
+      where: {
+        status: true
+      }
+    })
+      .then(dbUser => {
+        for (let i = 0; i < dbUser.length; i++) {
+          renderPartial.allPlayers.push(dbUser[i].dataValues);
+        }
+        db.Lobby.findAll()
+          .then(dbLobby => {
+            for (let i = 0; i < dbLobby.length; i++) {
+              renderPartial.allLobbies.push(dbLobby[i].dataValues);
+            }
+            res.render("lobby", renderPartial);
+          })
+          .catch(err => {
+            res.status(401).json(err);
+          });
       })
       .catch(err => {
         res.status(401).json(err);

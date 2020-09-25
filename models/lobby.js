@@ -1,27 +1,29 @@
 // Creating our User model
 module.exports = function(sequelize, DataTypes) {
   const Lobby = sequelize.define("Lobby", {
-    // The email cannot be null, and must be a proper email before creation
+    lobbyName: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
 
     members: {
       type: DataTypes.STRING,
 
-      allowNull: false,
+      allowNull: true,
 
-      unique: true
+      defaultValue: null
     },
 
-    IdHash: {
+    idHash: {
       type: DataTypes.STRING,
 
-      allowNull: false,
+      // allowNull: false,
 
-      unique: true
-    },
+      // unique: true
 
-    LobbyName: {
-      type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true,
+
+      defaultValue: null
     }
   });
 
