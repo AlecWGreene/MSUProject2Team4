@@ -101,6 +101,8 @@ class GameSession {
     this.currentParty = [];
     this.partyPassVotes = {};
     this.partyValidVotes = {};
+    this.prevPartyValidVotes = {};
+    this.prevPartyPassVotes = {};
 
     // Apply any custom settings
     this.applyCustomSettings(customSettings);
@@ -122,6 +124,13 @@ class GameSession {
           ? 4
           : 2
         : 3;
+  }
+
+  // Clear running timers
+  clearAllTimeouts() {
+    clearTimeout(this.timeout_PartyValid);
+    clearTimeout(this.timeout_PartyPass);
+    clearTimeout(this.timeout_PartySelection);
   }
 
   // Initialize GameSession to run
@@ -200,7 +209,11 @@ class GameSession {
   forcePartyValidVote(duration) {
     this.timeout_PartyValid = setTimeout(() => {
       for (let i = 0; i < this.users.length; i++) {
-        if (!Object.keys(this.partyValidVotes).includes(this.users[i].id)) {
+        if (
+          !Object.keys(this.partyValidVotes).includes(
+            this.users[i].id.toString()
+          )
+        ) {
           this.setUserVote_ValidParty(this.users[i], 1);
         }
       }
@@ -268,15 +281,17 @@ class GameSession {
   // Use the candidate party
   setParty(userArray) {
     if (
-      this.currentPhase !== "Computing" &&
-      this.candidateParty.length ===
+      this.currentPhase !== "Computing" ||
+      this.candidateParty.length !==
         this.quests[this.currentQuestIndex].partySize
     ) {
       return false;
     }
 
+    this.clearAllTimeouts();
     this.currentParty = Array.from(userArray);
-    this.currentPhase = "Party Voting";
+    this.prevPartyValidVotes = this.partyValidVotes;
+    this.partyValidVotes = {};
     this.forcePartyPassVote(7000);
   }
 
@@ -318,6 +333,9 @@ class GameSession {
         this.candidateParty = [];
         this.currentKingIndex = (this.currentKingIndex + 1) % this.users.length;
         this.currentPhase = "Party Selection";
+        this.prevPartyValidVotes = this.partyValidVotes;
+        this.partyValidVotes = {};
+        this.forcePartySelection(5000);
       }
     }
   }
@@ -388,6 +406,7 @@ class GameSession {
       // Move to next quest
       else {
         this.currentPhase = "Party Selection";
+        this.prevPartyPassVotes = this.partyPassVotes;
         this.partyPassVotes = {};
         this.candidateParty = [];
         this.currentKingIndex = (this.currentKingIndex + 1) % this.users.length;
@@ -399,6 +418,7 @@ class GameSession {
 
 class GameState {
   constructor(session) {
+    this.session = session;
     this.phases = session.phases;
     this.questCriteria = session.questCriteria;
 
@@ -418,10 +438,38 @@ class GameState {
     this.currentParty = session.currentParty;
     this.partyPassVotes = session.partyPassVotes;
     this.partyValidVotes = session.partyValidVotes;
+    this.prevPartyValidVotes = session.prevPartyValidVotes;
+    this.prevPartyPassVotes = session.prevPartyPassVotes;
   }
 
   debug_displaySession() {
-    return this;
+    const data = this.getPhaseInfo();
+
+    // Show roles
+    data.roles = {};
+    for (const user of this.users) {
+      data.roles[user.username] = this.roleAssignments[user.id];
+    }
+
+    // Add info per phase
+    switch (data.phase) {
+      case "Party Selection":
+        data.votes = {};
+        for (const user of this.currentParty) {
+          data.votes[user.username] = this.prevPartyPassVotes[user.id];
+        }
+        break;
+      case "Party Validation":
+        break;
+      case "Party Voting":
+        break;
+      case "Computing":
+        break;
+      case "Game Over":
+        break;
+    }
+
+    return data;
   }
 
   getPhaseInfo() {
@@ -430,6 +478,7 @@ class GameState {
     // Get phase and structure object with phase data
     data.phase = this.currentPhase;
     data.king = this.users[this.currentKingIndex];
+    data.history = this.questResults;
     switch (data.phase) {
       case "Party Selection":
         // Show previous quest result
@@ -440,24 +489,30 @@ class GameState {
         break;
       case "Party Validation":
         // Show candidate party
-        const users = this.users;
         data.party = this.candidateParty;
+        data.votes = {};
+        for (const user of this.users) {
+          // If user vas voted
+          if (this.partyValidVotes[user.id]) {
+            data.votes[user.username] = 1;
+          } else {
+            data.votes[user.username] = 0;
+          }
+        }
         break;
       case "Party Voting":
         // Show who voted to send the party
         data.party = this.currentParty;
         data.votes = {};
         for (const user of this.users) {
-          data.votes[user.username] = this.partyValidVotes[user.id];
+          data.votes[user.username] = this.prevPartyValidVotes[user.id];
         }
         break;
       case "Computing":
         break;
       case "Game Over":
-        data.quests = this.questResults;
         break;
     }
-
     return data;
   }
 }
