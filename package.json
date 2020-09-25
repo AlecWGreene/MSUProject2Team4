@@ -4,6 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
+    "debugGame": "node config/gameTest.js",
     "test": "npm run lint",
     "start": "node server.js",
     "lint": "eslint --quiet .",
