@@ -1,7 +1,9 @@
+/* eslint-disable no-empty */
+/* eslint-disable indent */
 "use strict";
 
 class GameSession {
-  constructor(lobbyCode, customSettings) {
+  constructor(userArray, customSettings) {
     // Static variables
     this.phases = [
       "Party Selection",
@@ -85,9 +87,11 @@ class GameSession {
     this.timeout_PartyPass = null;
 
     // Game variables
+    this.numFails = 0;
+    this.questResults = [];
     this.currentPhase = "";
     this.currentParty = [];
-    this.users = [];
+    this.users = userArray;
     this.currentKingIndex = -1;
     this.gameOver = false;
     this.quests = [];
@@ -98,10 +102,39 @@ class GameSession {
     this.currentParty = [];
     this.partyPassVotes = {};
     this.partyValidVotes = {};
+    this.prevPartyValidVotes = {};
+    this.prevPartyPassVotes = {};
 
     // Apply any custom settings
     this.applyCustomSettings(customSettings);
     this.setupGame();
+  }
+
+  // Indicates if the cached GameState is outdates
+  stateCacheNeedsUpdate(state) {
+    // Check if phases match
+    if (state.currentPhase !== this.currentPhase) {
+      return true;
+    }
+    // Check if quest indices match
+    else if (state.currentQuestIndex !== this.currentQuestIndex) {
+    }
+    // Check if nothing?
+    else if (state.currentPhase === "Party Selection") {
+    }
+    // Check if the lists of voted users matches
+    else if (state.currentPhase === "Party Validation") {
+      for (const user of this.users) {
+        if (state.partyValidVotes[user.id] !== this.partyValidVotes[user.id]) {
+          return true;
+        }
+      }
+    }
+    // Check if nothing?
+    else if (state.currentPhase === "Party Voting") {
+    }
+
+    return false;
   }
 
   // Change game settings
@@ -110,6 +143,22 @@ class GameSession {
     this.maxDuration_partySelection = 10000;
     this.maxDuration_partyValidVote = 10000;
     this.maxDuration_partyPassVote = 10000;
+
+    // Apply specified timeouts
+    if (customSettings.timeLimits) {
+      if (customSettings.timeLimits.partySelection) {
+        this.maxDuration_partySelection =
+          customSettings.timeLimits.partySelection;
+      }
+      if (customSettings.timeLimits.partyValidVote) {
+        this.maxDuration_partyValidVote =
+          customSettings.timeLimits.partyValidVote;
+      }
+      if (customSettings.timeLimits.partyPassVote) {
+        this.maxDuration_partyPassVote =
+          customSettings.timeLimits.partyPassVote;
+      }
+    }
 
     // Set quests and roles
     this.quests = this.questCriteria.medium;
@@ -121,45 +170,15 @@ class GameSession {
         : 3;
   }
 
+  // Clear running timers
+  clearAllTimeouts() {
+    clearTimeout(this.timeout_PartyValid);
+    clearTimeout(this.timeout_PartyPass);
+    clearTimeout(this.timeout_PartySelection);
+  }
+
   // Initialize GameSession to run
-  setupGame(lobbyCode) {
-    // =================================== DEBUG CODE ===================================
-    this.lobbyCode = lobbyCode;
-    this.ready = true;
-    // Create fake array of users
-    this.users = [
-      {
-        id: 1,
-        username: "Alec"
-      },
-      {
-        id: 2,
-        username: "Desare"
-      },
-      {
-        id: 3,
-        username: "Olga"
-      },
-      {
-        id: 4,
-        username: "Ben"
-      },
-      {
-        id: 5,
-        username: "Spencer"
-      },
-      {
-        id: 6,
-        username: "Miranda"
-      },
-      {
-        id: 7,
-        username: "Josh"
-      }
-    ];
-
-    // ==================================================================================
-
+  setupGame() {
     // Setup strings to represent role tokens
     const roleArray = (
       "Merlin==" +
@@ -184,6 +203,7 @@ class GameSession {
     this.gameOver = false;
     this.passedQuests = 0;
     this.currentQuestIndex = 0;
+    this.ready = true;
   }
 
   // Timout function for party validation phase
@@ -197,7 +217,11 @@ class GameSession {
   forcePartyValidVote(duration) {
     this.timeout_PartyValid = setTimeout(() => {
       for (let i = 0; i < this.users.length; i++) {
-        if (!Object.keys(this.partyValidVotes).includes(this.users[i].id)) {
+        if (
+          !Object.keys(this.partyValidVotes).includes(
+            this.users[i].id.toString()
+          )
+        ) {
           this.setUserVote_ValidParty(this.users[i], 1);
         }
       }
@@ -259,18 +283,24 @@ class GameSession {
     // Copy values from array and change phase
     this.candidateParty = Array.from(userArray);
     this.currentPhase = "Party Validation";
-    this.forcePartyValidVote(7000);
+    this.forcePartyValidVote(this.maxDuration_partyValidVote);
   }
 
   // Use the candidate party
   setParty(userArray) {
-    if (this.currentPhase !== "Party Selection") {
+    if (
+      this.currentPhase !== "Computing" ||
+      this.candidateParty.length !==
+        this.quests[this.currentQuestIndex].partySize
+    ) {
       return false;
     }
 
+    this.clearAllTimeouts();
     this.currentParty = Array.from(userArray);
-    this.currentPhase = "Party Voting";
-    this.forcePartyPassVote(7000);
+    this.prevPartyValidVotes = this.partyValidVotes;
+    this.partyValidVotes = {};
+    this.forcePartyPassVote(this.maxDuration_partyPassVote);
   }
 
   // Cast a vote on a party selection
@@ -304,13 +334,16 @@ class GameSession {
       // If the vote passes, then set the candidate as current party otherwise restart the vote
       if (numYes >= numNo) {
         this.setParty(this.candidateParty);
+        this.numFails = 0;
         this.candidateParty = [];
-        this.partyValidVotes = {};
+        this.currentPhase = "Party Voting";
       } else {
         this.candidateParty = [];
         this.currentKingIndex = (this.currentKingIndex + 1) % this.users.length;
-        this.partyValidVotes = {};
         this.currentPhase = "Party Selection";
+        this.prevPartyValidVotes = this.partyValidVotes;
+        this.partyValidVotes = {};
+        this.forcePartySelection(this.maxDuration_partySelection);
       }
     }
   }
@@ -364,6 +397,7 @@ class GameSession {
       }
 
       // Increment counter if quest didn't fail
+      this.questResults[this.currentQuestIndex] = failed ? -1 : 1;
       this.passedQuests += failed ? 0 : 1;
       this.currentQuestIndex++;
 
@@ -377,17 +411,142 @@ class GameSession {
         this.gameOver = true;
         this.currentPhase = "Game Over";
       }
+      // If number of failed quests is met
+      else if (this.numFails === 3) {
+        this.gameOver = true;
+        this.currentPhase = "Game Over";
+      }
       // Move to next quest
       else {
         this.currentPhase = "Party Selection";
+        this.prevPartyPassVotes = this.partyPassVotes;
         this.partyPassVotes = {};
-        this.currentParty = [];
         this.candidateParty = [];
         this.currentKingIndex = (this.currentKingIndex + 1) % this.users.length;
-        this.forcePartySelection(5000);
+        this.forcePartySelection(this.maxDuration_partySelection);
       }
     }
   }
 }
 
-module.exports = { GameSession: GameSession };
+class GameState {
+  constructor(session) {
+    this.session = session;
+    this.phases = session.phases;
+    this.questCriteria = session.questCriteria;
+
+    // Game variables
+    this.numFails = session.numFails;
+    this.questResults = session.questResults;
+    this.currentPhase = session.currentPhase;
+    this.currentParty = session.currentParty;
+    this.users = session.users;
+    this.currentKingIndex = session.currentKingIndex;
+    this.gameOver = session.gameOver;
+    this.quests = session.quests;
+    this.roleAssignments = session.roleAssignments;
+    this.passedQuests = session.passedQuests;
+    this.currentQuestIndex = session.currentQuestIndex;
+    this.candidateParty = session.candidateParty;
+    this.currentParty = session.currentParty;
+    this.partyPassVotes = session.partyPassVotes;
+    this.partyValidVotes = session.partyValidVotes;
+    this.prevPartyValidVotes = session.prevPartyValidVotes;
+    this.prevPartyPassVotes = session.prevPartyPassVotes;
+  }
+
+  debug_displaySession() {
+    const data = this.getPhaseInfo();
+
+    // Show roles
+    data.roles = {};
+    for (const user of this.users) {
+      data.roles[user.username] = this.roleAssignments[user.id];
+    }
+
+    // Add info per phase
+    switch (data.phase) {
+      case "Party Selection":
+        data.votes = {};
+        for (const user of this.currentParty) {
+          data.votes[user.username] = this.prevPartyPassVotes[user.id];
+        }
+        break;
+      case "Party Validation":
+        break;
+      case "Party Voting":
+        break;
+      case "Computing":
+        break;
+      case "Game Over":
+        break;
+    }
+
+    return data;
+  }
+
+  getRevealInfo(role) {
+    const roles = Object.entries(obj);
+    switch (role) {
+      case "Merlin":
+        return roles
+          .filter(entry => ["Minion", "Assassin"].includes(entry[1]))
+          .map(entry => entry[0]);
+      case "Percival":
+        return roles
+          .filter(entry => ["Merlin"].includes(entry[1]))
+          .map(entry => entry[0]);
+      case "Assassin":
+      case "Minion":
+        return roles
+          .filter(entry => ["Minion"].includes(entry[1]))
+          .map(entry => entry[0]);
+    }
+  }
+
+  getPhaseInfo() {
+    const data = {};
+
+    // Get phase and structure object with phase data
+    data.phase = this.currentPhase;
+    data.king = this.users[this.currentKingIndex];
+    data.history = this.questResults;
+    switch (data.phase) {
+      case "Party Selection":
+        // Show previous quest result
+        if (this.currentQuestIndex !== 0) {
+          data.prevParty = this.currentParty;
+          data.prevFails = this.numFails;
+        }
+        break;
+      case "Party Validation":
+        // Show candidate party
+        data.party = this.candidateParty;
+        data.votes = {};
+        for (const user of this.users) {
+          // If user vas voted
+          if (this.partyValidVotes[user.id]) {
+            data.votes[user.username] = 1;
+          } else {
+            data.votes[user.username] = 0;
+          }
+        }
+        break;
+      case "Party Voting":
+        // Show who voted to send the party
+        data.party = this.currentParty;
+        data.votes = {};
+        for (const user of this.users) {
+          data.votes[user.username] = this.prevPartyValidVotes[user.id];
+        }
+        break;
+      case "Computing":
+        break;
+      case "Game Over":
+        break;
+    }
+    return data;
+  }
+}
+
+module.exports = { GameSession: GameSession, GameState: GameState };

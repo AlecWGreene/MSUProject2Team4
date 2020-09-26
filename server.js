@@ -37,10 +37,14 @@ app.use(passport.session());
 app.engine("handlebars", handlebars({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
+// Setup game session manager
+const sessionManager = require("./config/sessionManager")();
+
 // Load our routes
 require("./routes/html-routes.js")(app);
 require("./routes/api-routes.js")(app);
-require("./routes/api-game-routes")(app, require("./config/sessionManager"));
+require("./routes/api-game-routes")(app, sessionManager);
+require("./routes/api-lobby-routes")(app, sessionManager);
 
 // Sync to the database then start the app
 db.sequelize.sync().then(() => {
