@@ -28,12 +28,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("public"));
 
-// Set Handlebars.
-const exphbs = require("express-handlebars");
-
-app.engine("handlebars", exphbs({ defaultLayout: "main" }));
-app.set("view engine", "handlebars");
-
 // Integrate express-session and passport to allow the authentication middleware
 app.use(sessionMiddleware);
 app.use(passport.initialize());

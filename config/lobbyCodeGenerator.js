@@ -140,10 +140,10 @@ function hashLobbyId(hashSet, charSet) {
 //     return duplicates;
 //   }*/
   
-const obj = verifyHashSet(hashSet);
-console.log(hashSet);
-console.log(`Duplices of the hashSet (size ${hashSet.length}):
-${JSON.stringify(obj,null,"\t")}
-`);
+// const obj = verifyHashSet(hashSet);
+// console.log(hashSet);
+// console.log(`Duplices of the hashSet (size ${hashSet.length}):
+// ${JSON.stringify(obj,null,"\t")}
+// `);
   
 module.exports = hashLobbyId;

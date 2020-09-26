@@ -1,34 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <title>Avalon</title>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/lumen/bootstrap.min.css">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-  <link href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch&family=Roboto+Slab&display=swap" rel="stylesheet">
-  <link href="assets/css/style.css" rel="stylesheet">
-  <link href="assets/css/gameStyle.css" rel="stylesheet">
-</head>
+    <head>
+        <title>Avalon</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/lumen/bootstrap.min.css">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch&family=Roboto+Slab&display=swap" rel="stylesheet">
+        <link href="assets/css/style.css" rel="stylesheet">
+        {{!-- <link href="assets/css/gameStyle.css" rel="stylesheet"> --}}
+    </head>
 
-	<body>
-<!-- Nav Bar -->
-<nav class="navbar navbar-dark bg-dark">
-    <div class="container-center">
-    <div class="navbar-header">
-        <a class="text-white" style="font-size: 50px; font-family: 'Grenze Gotisch', cursive;" href="/home">Avalon</a>
-    </div>
-    <div class="container d-flex flex-column flex-md-row justify-content-between">
-        <button type="submit" class="btn btn-light" style="font-size: 12px; font-family: 'Roboto Slab', serif;"><a href="/login">Log In</a></button>
-        <button type="submit" class="btn btn-light" style="font-size: 12px; font-family: 'Roboto Slab', serif;"><a href="/signup">Sign-Up</a></button>
-    </div>
-</nav>
-    <div class="container d-flex flex-column justify-content-center">
-        {{{ body }}}
-    </div>
+    <body>
+    <!-- Nav Bar -->
+        <header>
+            <div class="fixed-top">
+                <div class="collapse" id="navbarToggleExternalContent">
+                    <div class="bg-dark p-4 text-center">
+                        <button type="submit" class="btn btn-outline-light mr-5" style="font-size: 12px; font-family: 'Roboto Slab', serif;"><a href="/login">Log In</a></button>
+                        <button type="submit" class="btn btn-light mr-5" style="font-size: 12px; font-family: 'Roboto Slab', serif;"><a href="/signup">Sign-Up</a></button>
+                    </div>
+                </div>
+                <nav class="navbar navbar-dark bg-dark">
+                    <div class="container justify-content-center">
+                        <div class="navbar-header">
+                            <a class="text-white" style="font-size: 50px; font-family: 'Grenze Gotisch', cursive;">Avalon</a>
+                    </div>
+                    <div class="container justify-content-center">
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <!-- <span class="navbar-toggler-icon"></span> -->
+                        <svg width="3em" height="3em" viewBox="0 0 16 16" class="bi bi-person" fill="currentColor" xmlns="http://www.w3.org/2000/svg" >
+                            <path fill-rule="evenodd" d="M10 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm6 5c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </nav>
+            </div>
+        </header>
 
-{{!-- Scripts --}}
-    <script src="https://code.jquery.com/jquery.js"></script>
+        <div class="container d-flex flex-column justify-content-center">
+            {{{ body }}}
+        </div>
 
-	</body>
+        {{!-- Scripts --}}
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+
+    </body>
 </html>
