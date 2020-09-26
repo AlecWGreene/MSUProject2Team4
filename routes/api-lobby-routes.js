@@ -207,11 +207,7 @@ module.exports = function(app, sessionManager) {
   );
 
   // POST /api/lobby/leave/ -- leaves the current lobby the user is in
-  app.post(
-    "/api/lobby/leave",
-    passport.authenticate("local"),
-    (req, res) => {}
-  );
+  app.post("/api/lobby/leave", passport.authenticate("local"));
 
   // POST /api/lobby/start-game -- starts the game session if conditions are valid
   app.post(
@@ -224,7 +220,7 @@ module.exports = function(app, sessionManager) {
       }
       const user = req.user;
 
-      isLobbyHead().then(lobby => {
+      isLobbyHead(user).then(lobby => {
         if (typeof lobby === "number") {
           return res.status(403).send(lobby);
         }
