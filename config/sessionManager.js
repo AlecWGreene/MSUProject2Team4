@@ -1,21 +1,9 @@
 const { GameSession: GameSession } = require("./gameSession.js");
-const db = require("../models/index.js");
 
 class SessionManager {
-  static createSession(lobbyCode, customSettings) {
+  static createSession(users, customSettings) {
     // Register new session
-    this.sessionDictionary[lobbyCode] = new GameSession(
-      lobbyCode,
-      customSettings
-    );
-
-    db.Lobby.findOne({
-      where: {
-        IdHash: lobbyCode
-      }
-    });
-
-    /** @todo Load users from lobby into GameSession.users */
+    this.sessionDictionary[lobbyCode] = new GameSession(users, customSettings);
   }
 
   static resolveSession(lobbyCode) {
@@ -25,4 +13,7 @@ class SessionManager {
 
 SessionManager.sessionDictionary = {};
 
-module.exports = SessionManager;
+// Create the "static" instance and return it
+module.exports = function() {
+  return new SessionManager();
+};
