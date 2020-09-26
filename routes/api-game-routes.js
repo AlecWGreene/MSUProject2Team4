@@ -2,6 +2,7 @@
 /* eslint-disable no-unused-vars */
 const db = require("../models");
 const passport = require("../config/passport");
+const { GameState } = require("../config/gameSession");
 
 module.exports = function(app, sessionManager) {
   // GET Route -- game/run
@@ -22,7 +23,7 @@ module.exports = function(app, sessionManager) {
         sessionManager.createSession(lobbyCode, customSettings);
       }
 
-      return sessionManager.sessionDictionary[req.params.lobbyCode];
+      return res.status(202).send(true);
     }
   );
 
@@ -55,7 +56,7 @@ module.exports = function(app, sessionManager) {
         sessionManager.sessionDictionary[req.params.lobbyCode];
       const currentUser = req.user;
       currentSession.setUserVote_PassParty(currentUser, req.body.vote);
-      res.json(currentUser);
+      res.json(new GameState(currentSession).getPhaseInfo());
     }
   );
 
@@ -72,14 +73,25 @@ module.exports = function(app, sessionManager) {
     // eslint-disable-next-line prettier/prettier
     const partyArray = userArray.filter(user => req.body.userArray.includes(user.id) );
     currentSession.setPartySelection(partyArray);
-    res.json(req.body.userArray);
+    res.json(new GameState(currentSession).getPhaseInfo());
   });
 
   // GET Route -- game/state
   app.get(
     "/api/game/:lobbyCode/state",
     passport.authenticate("local"),
-    (req, res) => {}
+    (req, res) => {
+      const cache = req.body.state;
+      const currentSession =
+        sessionManager.sessionDictionary[req.params.lobbyCode];
+      if (currentSession.stateCacheNeedsUpdate(cache)) {
+        return res
+          .status(202)
+          .json(new GAmeState(currentSession).getPhaseInfo());
+      }
+
+      return res.status(202).send(false);
+    }
   );
 
   // GET Route -- game/users
