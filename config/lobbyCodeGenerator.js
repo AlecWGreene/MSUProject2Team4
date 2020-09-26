@@ -28,7 +28,7 @@ function hashLobbyId(hashSet, charSet) {
     parent: null
   };
   let currentNode = dictionary[charSet[startIndex]];
-  
+    
   // Run through tree
   while(running) {
     const currentWord = retraceWord(currentNode);
@@ -42,11 +42,11 @@ function hashLobbyId(hashSet, charSet) {
       }
     }
     /** console.log(
-`========== Generating LobbyCode ==========
-Hashes: ${hashSet.join(", ")}
-CurrentWord: ${currentWord}
-Children: ${JSON.stringify(currentNode.charCounts, null, "\t")} 
-` );*/ 
+  `========== Generating LobbyCode ==========
+  Hashes: ${hashSet.join(", ")}
+  CurrentWord: ${currentWord}
+  Children: ${JSON.stringify(currentNode.charCounts, null, "\t")} 
+  ` );*/ 
     // Find least common character
     let lowestChar = {
       char: "G",
@@ -56,7 +56,7 @@ Children: ${JSON.stringify(currentNode.charCounts, null, "\t")}
     for (const char of Object.keys(currentNode.charCounts)) {
       if (currentNode.charCounts[char] <= lowestChar.count) {
         lowestChar = { char: char, count: currentNode.charCounts[char] };
-          
+            
         if(currentNode.charCounts[char] < lowestChar.count) {
           changed = true;
         }
@@ -65,7 +65,7 @@ Children: ${JSON.stringify(currentNode.charCounts, null, "\t")}
         changed = true;
       }
     }
-      
+        
     // Pick random char
     if (currentWord.length === 7) {
       if (lowestChar.count === 0) {
@@ -101,7 +101,7 @@ Children: ${JSON.stringify(currentNode.charCounts, null, "\t")}
     }
   }
 }
-
+  
 // DEBUGGING ONLY
 // setInterval(() => {
 //     hashSet.push(hashLobbyId());
@@ -112,38 +112,38 @@ Children: ${JSON.stringify(currentNode.charCounts, null, "\t")}
 // `);
 // }, 10);
 /**
-function verifyHashSet(hashSet) {
-  const seen = [];
-  const duplicates = {};
-  const set = hashSet;
-  // For each item in the hash set
-  while(set.length > 0) {
-    // Get next entry
-    const entry = set.pop();
-
-    // If entry has already been catalogued, it's a duplicate
-    if(seen.includes(entry)) {
-      if (duplicates[entry]) {
-        duplicates[entry].count++;
+  function verifyHashSet(hashSet) {
+    const seen = [];
+    const duplicates = {};
+    const set = hashSet;
+    // For each item in the hash set
+    while(set.length > 0) {
+      // Get next entry
+      const entry = set.pop();
+  
+      // If entry has already been catalogued, it's a duplicate
+      if(seen.includes(entry)) {
+        if (duplicates[entry]) {
+          duplicates[entry].count++;
+        }
+        else{
+          duplicates[entry] = {
+            count: 2
+          };
+        }
       }
-      else{
-        duplicates[entry] = {
-          count: 2
-        };
-      }
+  
+      // Push entry to seen array
+      seen.push(entry);
     }
-
-    // Push entry to seen array
-    seen.push(entry);
-  }
-
-  return duplicates;
-}*/
-
+  
+    return duplicates;
+  }*/
+  
 // const obj = verifyHashSet(hashSet);
 // console.log(hashSet);
 // console.log(`Duplices of the hashSet (size ${hashSet.length}):
 // ${JSON.stringify(obj,null,"\t")}
 // `);
-
+  
 module.exports = hashLobbyId;

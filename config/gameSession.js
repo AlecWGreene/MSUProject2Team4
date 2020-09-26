@@ -411,6 +411,11 @@ class GameSession {
         this.gameOver = true;
         this.currentPhase = "Game Over";
       }
+      // If number of failed quests is met
+      else if (this.numFails === 3) {
+        this.gameOver = true;
+        this.currentPhase = "Game Over";
+      }
       // Move to next quest
       else {
         this.currentPhase = "Party Selection";
@@ -478,6 +483,25 @@ class GameState {
     }
 
     return data;
+  }
+
+  getRevealInfo(role) {
+    const roles = Object.entries(obj);
+    switch (role) {
+      case "Merlin":
+        return roles
+          .filter(entry => ["Minion", "Assassin"].includes(entry[1]))
+          .map(entry => entry[0]);
+      case "Percival":
+        return roles
+          .filter(entry => ["Merlin"].includes(entry[1]))
+          .map(entry => entry[0]);
+      case "Assassin":
+      case "Minion":
+        return roles
+          .filter(entry => ["Minion"].includes(entry[1]))
+          .map(entry => entry[0]);
+    }
   }
 
   getPhaseInfo() {
