@@ -1,13 +1,9 @@
 const { GameSession: GameSession } = require("./gameSession.js");
-const db = require("../models/index.js");
 
 class SessionManager {
   static createSession(users, customSettings) {
     // Register new session
-    this.sessionDictionary[lobbyCode] = new GameSession(
-      users,
-      customSettings
-    );
+    this.sessionDictionary[lobbyCode] = new GameSession(users, customSettings);
   }
 
   static resolveSession(lobbyCode) {
