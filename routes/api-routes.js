@@ -81,9 +81,9 @@ module.exports = function(app) {
       });
   });
 
-  app.get("/api/lobby", (req, res) => {
+  app.get("/api/lobby/create", (req, res) => {
     const renderPartial = {
-      layout: "lobbyPage",
+      layout: "userPage",
       allPlayers: [],
       allLobbies: []
     };
@@ -94,18 +94,74 @@ module.exports = function(app) {
     })
       .then(dbUser => {
         for (let i = 0; i < dbUser.length; i++) {
+          let select = false;
+          if (dbUser[i].dataValues.id === parseInt(req.query.id)) {
+            select = Boolean(req.query.select);
+          }
           renderPartial.allPlayers.push(dbUser[i].dataValues);
+          renderPartial.allPlayers[i].select = select;
         }
         db.Lobby.findAll()
           .then(dbLobby => {
             for (let i = 0; i < dbLobby.length; i++) {
               renderPartial.allLobbies.push(dbLobby[i].dataValues);
             }
-            res.render("lobby", renderPartial);
+            res.render("createLobby", renderPartial);
           })
           .catch(err => {
             res.status(401).json(err);
           });
+      })
+      .catch(err => {
+        res.status(401).json(err);
+      });
+  });
+
+  app.get("/api/lobby/join", (req, res) => {
+    const renderPartial = {
+      layout: "userPage",
+      allPlayers: [],
+      allLobbies: []
+    };
+    db.User.findAll({
+      where: {
+        status: true
+      }
+    })
+      .then(dbUser => {
+        for (let i = 0; i < dbUser.length; i++) {
+          let select = false;
+          if (dbUser[i].dataValues.id === parseInt(req.query.id)) {
+            select = Boolean(req.query.select);
+          }
+          renderPartial.allPlayers.push(dbUser[i].dataValues);
+          renderPartial.allPlayers[i].select = select;
+        }
+        db.Lobby.findAll()
+          .then(dbLobby => {
+            for (let i = 0; i < dbLobby.length; i++) {
+              renderPartial.allLobbies.push(dbLobby[i].dataValues);
+            }
+            res.render("joinLobby", renderPartial);
+          })
+          .catch(err => {
+            res.status(401).json(err);
+          });
+      })
+      .catch(err => {
+        res.status(401).json(err);
+      });
+  });
+
+  app.post("/api/lobby/create", (req, res) => {
+    db.User.create({
+      username: req.body.username,
+      email: req.body.email,
+      password: req.body.password
+      // lobbyID: req.body.lobby
+    })
+      .then(() => {
+        res.redirect(307, "/api/login");
       })
       .catch(err => {
         res.status(401).json(err);

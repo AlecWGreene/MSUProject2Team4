@@ -4,23 +4,85 @@ form.login {
   margin-top: 50px;
 }
 
-h2, h3 {
-  font-family: 'Grenze Gotisch', cursive;
-  font-size: 40px;
-  font-weight: bold;
-  text-align: center;
-};
-
-hr { 
-border: 100;
-height: 1px;
-background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
-};
-
-body {
-cursor: url(http://www.rw-designer.com/cursor-extern.php?id=122464), auto;
-};
-
 ul, li {
   list-style-type: none;
+}
+
+p {
+  font-size: 15px; 
+  font-family: 'Roboto Slab', serif;
+}
+
+a, #logout {
+  color:whitesmoke;
+}
+
+a:hover, a:visited, a:link, a:active {
+  color: whitesmoke;
+  /* text-decoration: none !important; */
+}
+
+.pointer, .grab, .grabbing {
+  cursor: url(/assets/img/dagger-sm.png), auto;
+}
+
+.avalon {
+  font-size: 75px; 
+  font-family: 'Grenze Gotisch', cursive;
+}
+
+.gold {
+  border-style: groove;
+  border-width: 7px;
+  border-color: rgba(235, 201, 10, 0.562); 
+  border-radius: 25px 
+}
+
+.gold-square {
+  border-style: groove;
+  border-width: 5px;
+  border-color: rgba(235, 201, 10, 0.562); 
+  border-radius: 5px; 
+}
+
+h1 {
+  text-align: center;
+  font-size: 25px; 
+  font-weight: bold; 
+  font-family: 'Roboto Slab', serif;
+  color: whitesmoke; 
+  background-color: #0000008c; 
+  width: 200px;
+  height: 100px;
+}
+
+form input {
+  border: 0; 
+  padding: 5px; 
+  width: 80%; 
+  margin-right: 0.5%;
+}
+
+form button {
+  width: 10%; 
+  background: rgb(87, 112, 121); 
+  border: none; 
+  padding: 10px; 
+  border-radius: 50px;
+  margin-bottom: 10px;
+}
+
+.gradient {
+  background-image: linear-gradient(rgba(245, 245, 245, 0.486), black, rgba(245, 245, 245, 0.486));
+  color:whitesmoke;
+}
+
+.gradient-settings {
+  background-image: linear-gradient( black, rgba(245, 245, 245, 0.486), black);
+  color:whitesmoke;
+}
+
+#quest {
+  width: 218px; 
+  color:whitesmoke;
 }

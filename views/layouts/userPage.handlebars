@@ -7,8 +7,7 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/lumen/bootstrap.min.css">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
         <link href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch&family=Roboto+Slab&display=swap" rel="stylesheet">
-        <link href="assets/css/style.css" rel="stylesheet">
-        <link href="assets/css/gameStyle.css" rel="stylesheet">
+        <link href="/assets/css/style.css" rel="stylesheet">
     </head>
 
     <body>
@@ -18,15 +17,14 @@
             <div class="collapse" id="navbarToggleExternalContent">
               <div class="bg-dark p-4 text-center">
                     <button type="submit" class="btn gradient gold-square mr-5" style="font-size: 12px; font-family: 'Roboto Slab', serif;"><a href="/settings">Settings</a></button>
-                    <button type="submit" class="btn gradient gold-square mr-5" style="font-size: 12px; font-family: 'Roboto Slab', serif;"><a href="/game">Play Game</a></button>
-                    <button type="submit" class="btn gradient gold-square mr-5" id="logout" style="font-size: 12px; font-family: 'Roboto Slab', serif;">Logout</button>
+                    <button type="submit" class="btn gradient gold-square mr-5" id="logout" style="font-size: 12px; font-family: 'Roboto Slab', serif;"><a href="/api/logout">Logout</a></button>
               </div>
             </div>
             <nav class="navbar navbar-dark bg-dark">
                 <div class="container justify-content-center">
                     <div class="row">
                         <div class="navbar-header">
-                            <a class="text-white avalon">Avalon</a>
+                            <a class="text-white avalon" href="/">Avalon</a>
                         </div>
                     </div>
                 </div>
@@ -41,11 +39,8 @@
                 </div>
                 <div class="container justify-content-center">
                    <div class="row">
-                        <a class="btn gold-square active mr-3" id="quest" href="#" style="font-size: 15px; font-family: 'Roboto Slab', serif;">Quest 1</a>
-                        <a class="btn gold-square mr-3" id="quest" href="#" style="font-size: 15px; font-family: 'Roboto Slab', serif;">Quest 2</a>
-                        <a class="btn gold-square mr-3" id="quest" href="#" style="font-size: 15px; font-family: 'Roboto Slab', serif;">Quest 3</a>
-                        <a class="btn gold-square mr-3" id="quest" href="#" style="font-size: 15px; font-family: 'Roboto Slab', serif;">Quest 4</a>
-                        <a class="btn gold-square mr-3" id="quest" href="#" style="font-size: 15px; font-family: 'Roboto Slab', serif;">Quest 5</a>
+                        <a class="btn gold-square mr-5" id="create-lobby" href="/api/lobby/create" style="font-size: 15px; font-family: 'Roboto Slab', serif;">Create Lobby</a>
+                        <a class="btn gold-square mr-5" id="join-lobby" href="/api/lobby/join" style="font-size: 15px; font-family: 'Roboto Slab', serif;">Join Lobby</a>
                     </div> 
                 </div>
             </nav>

@@ -40,8 +40,13 @@ module.exports = function(app) {
     res.render("games", { layout: "userPage" });
   });
 
-  // Render lobby page
-  app.get("/lobby", isAuthenticated, (req, res) => {
-    res.render("lobby", { layout: "lobbyPage" });
+  // Render create lobby page
+  app.get("/lobby/create", isAuthenticated, (req, res) => {
+    res.render("createLobby", { layout: "userPage" });
+  });
+
+  // Render join lobby page
+  app.get("/lobby/join", isAuthenticated, (req, res) => {
+    res.render("joinLobby", { layout: "userPage" });
   });
 };
