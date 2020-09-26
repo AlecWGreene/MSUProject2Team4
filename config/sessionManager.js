@@ -1,4 +1,5 @@
 const { GameSession: GameSession } = require("./gameSession.js");
+const db = require("../models/index.js");
 
 class SessionManager {
   static createSession(lobbyCode, customSettings) {
@@ -7,6 +8,12 @@ class SessionManager {
       lobbyCode,
       customSettings
     );
+
+    db.Lobby.findOne({
+      where: {
+        IdHash: lobbyCode
+      }
+    });
 
     /** @todo Load users from lobby into GameSession.users */
   }

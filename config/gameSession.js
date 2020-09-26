@@ -1,8 +1,9 @@
+/* eslint-disable no-empty */
 /* eslint-disable indent */
 "use strict";
 
 class GameSession {
-  constructor(lobbyCode, customSettings) {
+  constructor(userArray, customSettings) {
     // Static variables
     this.phases = [
       "Party Selection",
@@ -90,7 +91,7 @@ class GameSession {
     this.questResults = [];
     this.currentPhase = "";
     this.currentParty = [];
-    this.users = [];
+    this.users = userArray;
     this.currentKingIndex = -1;
     this.gameOver = false;
     this.quests = [];
@@ -107,6 +108,33 @@ class GameSession {
     // Apply any custom settings
     this.applyCustomSettings(customSettings);
     this.setupGame();
+  }
+
+  // Indicates if the cached GameState is outdates
+  stateCacheNeedsUpdate(state) {
+    // Check if phases match
+    if (state.currentPhase !== this.currentPhase) {
+      return true;
+    }
+    // Check if quest indices match
+    else if (state.currentQuestIndex !== this.currentQuestIndex) {
+    }
+    // Check if nothing?
+    else if (state.currentPhase === "Party Selection") {
+    }
+    // Check if the lists of voted users matches
+    else if (state.currentPhase === "Party Validation") {
+      for (const user of this.users) {
+        if (state.partyValidVotes[user.id] !== this.partyValidVotes[user.id]) {
+          return true;
+        }
+      }
+    }
+    // Check if nothing?
+    else if (state.currentPhase === "Party Voting") {
+    }
+
+    return false;
   }
 
   // Change game settings
@@ -150,44 +178,7 @@ class GameSession {
   }
 
   // Initialize GameSession to run
-  setupGame(lobbyCode) {
-    // =================================== DEBUG CODE ===================================
-    this.lobbyCode = lobbyCode;
-    this.ready = true;
-    // Create fake array of users
-    this.users = [
-      {
-        id: 1,
-        username: "Alec"
-      },
-      {
-        id: 2,
-        username: "Desare"
-      },
-      {
-        id: 3,
-        username: "Olga"
-      },
-      {
-        id: 4,
-        username: "Ben"
-      },
-      {
-        id: 5,
-        username: "Spencer"
-      },
-      {
-        id: 6,
-        username: "Miranda"
-      },
-      {
-        id: 7,
-        username: "Josh"
-      }
-    ];
-
-    // ==================================================================================
-
+  setupGame() {
     // Setup strings to represent role tokens
     const roleArray = (
       "Merlin==" +
@@ -212,6 +203,7 @@ class GameSession {
     this.gameOver = false;
     this.passedQuests = 0;
     this.currentQuestIndex = 0;
+    this.ready = true;
   }
 
   // Timout function for party validation phase
