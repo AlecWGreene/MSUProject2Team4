@@ -148,7 +148,7 @@ module.exports = function(app, sessionManager) {
           }
         })
           .then(() => {
-            return res.status(200).redirect("/home");
+            res.status(200).json("/home");
           })
           .catch(err => {
             return res.status(409).json(err);
@@ -171,34 +171,34 @@ module.exports = function(app, sessionManager) {
         idhash: req.params.lobbyCode
       }
     })
-      .then(result => {
-        if (result.maxusers <= result.numusers) {
+      .then(lobby => {
+        if (lobby.maxusers <= lobby.numusers) {
           return res.status(406).send("Lobby is Full");
         }
 
         // Add user to hash
-        const users = result.userhash.split(",");
+        const users = lobby.userhash.split(",");
 
         // If user is in the lobby already, redirect them
         if (users.includes(user.id)) {
-          return res.status(202).redirect(`/lobby/${result.lobbyCode}`);
+          return res.status(202).redirect(`/lobby/${lobby.lobbyCode}`);
         }
 
         // Add user to lobby
         users.push(user.id);
-        result.numusers++;
+        lobby.numusers++;
 
         // update database entry and redirect user
-        result
+        lobby
           .save()
           .then(() => {
             // Update user lobby field
-            user.lobbyHash = result.lobbyCode;
+            user.lobbyHash = lobby.lobbyCode;
             user
               .save()
               .then(() => {
                 // Continue to lobby screen
-                return res.status(202).redirect(`/lobby/${result.lobbyCode}`);
+                res.status(202).json(lobby.idhash);
               })
               .catch(err => {
                 return res.status(403).json(err);
@@ -238,7 +238,7 @@ module.exports = function(app, sessionManager) {
         lobby
           .save()
           .then(() => {
-            return res.status(202).send(true);
+            res.status(202).json(true);
           })
           .catch(err => {
             return res.status(403).json(err);
@@ -248,7 +248,7 @@ module.exports = function(app, sessionManager) {
   );
 
   // GET /api/lobby/data
-  app.get("/api/lobby/data/", passport.authenticate("local"), (req, res) => {
+  app.get("/api/lobby/data", passport.authenticate("local"), (req, res) => {
     // Get user
     if (!req.user) {
       return res.status(402);
