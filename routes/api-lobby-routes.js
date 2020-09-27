@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // Dependencies
 const db = require("../models/index.js");
 const passport = require("../config/passport");
