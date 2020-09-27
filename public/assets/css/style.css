@@ -1,16 +1,74 @@
 /* Vanilla Stylesheet */
-form.signup,
-form.login {
+@import url('https://fonts.googleapis.com/css2?family=Rye&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville&display=swap');
+
+form.signup, form.login {
   margin-top: 50px;
+}
+
+.container, button:link, button:visited, button:hover, a:link, a:visited, a:hover, image:hover {
+  cursor: url(/assets/img/dagger-sm.png), auto;
+  position: relative;
+}
+
+hr.style-eight {
+  overflow: visible; /* For IE */
+  padding: 0;
+  border: none;
+  border-top: medium double rgba(235, 201, 10, 0.562); 
+  color: rgba(235, 201, 10, 0.562); 
+  text-align: center;
+}
+
+hr.style-eight:after {
+  content: "§";
+  display: inline-block;
+  position: relative;
+  top: -0.7em;
+  font-size: 1.5em;
+  padding: 0 0.25em;
+  background: none;
+}
+
+title, #avalon-nav {
+  font-family: 'Rye', cursive;
+  font-size: 75px;
+  color: whitesmoke;
+  text-shadow: -1px -1px 0 rgba(235, 201, 10, 0.562), 1px -1px 0 rgba(235, 201, 10, 0.562), -1px 1px 0 rgba(235, 201, 10, 0.562), 1px 1px 0 rgba(235, 201, 10, 0.562);
+}
+
+h1 {
+  color: whitesmoke; 
+  text-align: center;
+  font-size: 25px; 
+  font-weight: bold; 
+  font-family: 'Libre Baskerville', serif;
+  background-color: #0000008c; 
+  width: 200px;
+  height: 100px;
+}
+
+h2 {
+  color: whitesmoke;
+  text-align: center;
+  font-size: 25px; 
+  font-family: 'Libre Baskerville', serif;
+}
+
+p, label, button  {
+  color: whitesmoke;
+  font-size: 15px; 
+  font-family: 'Libre Baskerville', serif;
+}
+
+::placeholder {
+  color: black;
+  font-size: 12px;
+  font-family: 'Libre Baskerville', serif;
 }
 
 ul, li {
   list-style-type: none;
-}
-
-p {
-  font-size: 15px; 
-  font-family: 'Roboto Slab', serif;
 }
 
 a, #logout {
@@ -19,16 +77,12 @@ a, #logout {
 
 a:hover, a:visited, a:link, a:active {
   color: whitesmoke;
-  /* text-decoration: none !important; */
+  text-decoration: none !important;
 }
 
-.pointer, .grab, .grabbing {
-  cursor: url(/assets/img/dagger-sm.png), auto;
-}
-
-.avalon {
-  font-size: 75px; 
-  font-family: 'Grenze Gotisch', cursive;
+.navbar-dark .navbar-toggler {
+  color: rgba(255,255,255,.5);
+  border-color: rgba(255, 255, 255, 0);
 }
 
 .gold {
@@ -45,15 +99,11 @@ a:hover, a:visited, a:link, a:active {
   border-radius: 5px; 
 }
 
-h1 {
-  text-align: center;
-  font-size: 25px; 
-  font-weight: bold; 
-  font-family: 'Roboto Slab', serif;
-  color: whitesmoke; 
-  background-color: #0000008c; 
-  width: 200px;
-  height: 100px;
+.form-group{
+  border: 0; 
+  padding: 5px; 
+  width: 100%; 
+  margin-right: 0.5%;
 }
 
 form input {
