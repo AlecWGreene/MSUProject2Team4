@@ -36,6 +36,10 @@ module.exports = function(app) {
     res.render("homepage", { layout: "userPage" });
   });
 
+  app.get("/settings", isAuthenticated, (req, res) => {
+    res.render("settings", { layout: "userPage" });
+  });
+
   // Render games page
   app.get("/games", isAuthenticated, (req, res) => {
     res.render("games", { layout: "userPage" });
