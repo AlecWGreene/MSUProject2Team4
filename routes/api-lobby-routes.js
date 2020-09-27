@@ -82,7 +82,7 @@ module.exports = function(app, sessionManager) {
   }
 
   // POST /api/lobby/create -- creates a new lobby
-  app.post("/api/lobby/create", isAuthenticated, (req, res) => {
+  app.post("/api/lobby/create", isAuthenticated, (req, res, next) => {
     // Get user
     if (!req.user) {
       return res.status(403);
@@ -104,8 +104,6 @@ module.exports = function(app, sessionManager) {
         set = ["00000000"];
       }
       const code = codeGenerator(set, charSet);
-      console.log("Code: " + code);
-      console.log("Data: " + req.body);
       db.Lobby.create({
         lobbyname: req.body.name ? req.body.name : `Lobby-${code}`,
         idhash: code,
@@ -114,9 +112,9 @@ module.exports = function(app, sessionManager) {
         maxusers: req.body.partySize,
         numusers: 1
       })
-        .then(lobby => {
+        .then(() => {
           // Redirect user to lobby page
-          return res.status(201).redirect(`/lobby/${lobby.lobbyCode}`);
+          res.status(200).json(code);
         })
         .catch(err => {
           // Send error and a 409 status
