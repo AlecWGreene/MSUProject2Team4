@@ -81,12 +81,17 @@ module.exports = function(app, sessionManager) {
   }
 
   // POST /api/lobby/create -- creates a new lobby
-  app.post("/api/lobby/", passport.authenticate("local"), (req, res) => {
+  app.post("/api/lobby/create", passport.authenticate("local"), (req, res) => {
     // Get user
     if (!req.user) {
       return res.status(403);
     }
     const user = req.user;
+
+    // User must give a max party size
+    if (!req.body.partySize) {
+      return res.status(409).send("Lobby requires party size");
+    }
 
     // Get all existing lobby codes
     db.Lobby.findAll({
@@ -98,7 +103,9 @@ module.exports = function(app, sessionManager) {
         lobbyname: req.body.name ? req.body.name : `Lobby-${code}`,
         idhash: code,
         userhash: user.id.toString(),
-        creatorid: user.id
+        creatorid: user.id,
+        maxusers: req.body.partySize,
+        numusers: 1
       })
         .then(lobby => {
           // Redirect user to lobby page
@@ -112,38 +119,42 @@ module.exports = function(app, sessionManager) {
   });
 
   // DELETE /api/lobby/delete -- deletes an existing lobby if it is NOT in game session
-  app.delete("/api/lobby/", passport.authenticate("local"), (req, res) => {
-    // Get user
-    if (!req.user) {
-      return res.status(403);
-    }
-    const user = req.user;
-
-    // Check that user is the lobby head
-    isLobbyHead(user).then(result => {
-      // Return out if an error code is the result
-      if (typeof result === "number") {
-        return res.status(401).send(result);
-      }
-
-      // Return out if the user is not the head
-      if (!result) {
+  app.delete(
+    "/api/lobby/delete",
+    passport.authenticate("local"),
+    (req, res) => {
+      // Get user
+      if (!req.user) {
         return res.status(403);
-      } else {
-        db.Lobby.destroy({
-          where: {
-            idhash: user.lobbyCode
-          }
-        })
-          .then(() => {
-            return res.status(200).redirect("/home");
-          })
-          .catch(err => {
-            return res.status(409).json(err);
-          });
       }
-    });
-  });
+      const user = req.user;
+
+      // Check that user is the lobby head
+      isLobbyHead(user).then(result => {
+        // Return out if an error code is the result
+        if (typeof result === "number") {
+          return res.status(401).send(result);
+        }
+
+        // Return out if the user is not the head
+        if (!result) {
+          return res.status(403);
+        } else {
+          db.Lobby.destroy({
+            where: {
+              idhash: user.lobbyCode
+            }
+          })
+            .then(() => {
+              return res.status(200).redirect("/home");
+            })
+            .catch(err => {
+              return res.status(409).json(err);
+            });
+        }
+      });
+    }
+  );
 
   // POST /api/lobby/join/ -- joins a lobby with the specified code
   app.post(
