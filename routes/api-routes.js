@@ -1,6 +1,7 @@
 // Requiring our models and passport as we've configured it
 const db = require("../models");
 const passport = require("../config/passport");
+const isAuthenticated = require("../config/middleware/isAuthenticated.js");
 
 module.exports = function(app) {
   // Using the passport.authenticate middleware with our local strategy.
@@ -111,6 +112,32 @@ module.exports = function(app) {
           .catch(err => {
             res.status(401).json(err);
           });
+      })
+      .catch(err => {
+        res.status(401).json(err);
+      });
+  });
+
+  app.put("/api/settings", isAuthenticated, (req, res) => {
+    let data = {};
+    if (req.body.action === "submit-change-username") {
+      data = { username: req.body.input };
+    } else if (req.body.action === "submit-change-password") {
+      data = { password: req.body.input };
+    } else {
+      data = { email: req.body.input };
+    }
+    // Sending back a password, even a hashed password, isn't a good idea
+    db.User.update(data, {
+      where: {
+        id: req.user.id
+      }
+    })
+      .then(() => {
+        res.json({
+          data: data,
+          id: req.user.id
+        });
       })
       .catch(err => {
         res.status(401).json(err);
