@@ -47,6 +47,7 @@ module.exports = function(app, sessionManager) {
                 }
               })
                 .then(reqUser => {
+                  session.revealCharacterInfo();
                   res.json(
                     initState.getRevealInfo(session.roleAssignments[reqUser.id])
                   );
@@ -114,15 +115,25 @@ module.exports = function(app, sessionManager) {
   );
 
   // GET Route -- game/state
-  app.get("/api/game/:lobbyCode/state", isAuthenticated, (req, res) => {
-    const cache = req.body.state;
+  app.post("/api/game/:lobbyCode/state", isAuthenticated, (req, res) => {
+    const cache = req.body.cache;
     const currentSession =
       sessionManager.sessionDictionary[req.params.lobbyCode];
-    if (currentSession.stateCacheNeedsUpdate(cache)) {
-      return res.status(202).json(new GAmeState(currentSession).getPhaseInfo());
+    console.log("Comparing States");
+    //console.log(new GameState(currentSession).getPhaseInfo(req.user));
+    console.log(req.body);
+    console.log("-----------------------------------------------");
+    if (!cache) {
+      return res
+        .status(202)
+        .json(new GameState(currentSession).getPhaseInfo(req.user));
+    } else if (currentSession.stateCacheNeedsUpdate(cache)) {
+      return res
+        .status(202)
+        .json(new GameState(currentSession).getPhaseInfo(req.user));
     }
 
-    return res.status(202).send(false);
+    return res.status(202).json("Up to date");
   });
 
   // GET Route -- game/users
