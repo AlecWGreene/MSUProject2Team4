@@ -115,45 +115,19 @@ $(document).ready(() => {
 
     $("form.create-lobby").on("submit", event => {
         event.preventDefault();
-        // const LobbyData = {
-        //     name: $("#lobby-name")[0].value,
-        // };
-    
-        // if (!LobbyData.lobbyName || !LobbyData.members || !LobbyData.idHash) {
-        //   return;
-        // }
-        // If we have an email and password, run the signUpUser function
-        // createLobby();
-
-        // function createLobby() {
-            // $.ajax({
-            //     type: "POST",
-            //     url: "/api/lobby/create",
-            //     data: JSON.stringify({
-            //         partySize: 4
-            //     }),
-            //     dataType: "json",
-            //     contentType: "application/json",                
-            // })
-            //     .then(() => {
-            //         // handle error
-            //     })
-            //     .catch(handleLoginErr);
-        // }
-
+  
         $.post("http://localhost:8080/api/lobby/create",{
             partySize: 4
-        }).then(res => console.log(res));
-    
+        }).then(res => console.log(res))
+
+        .catch(handleLoginErr);
+
         function handleLoginErr(err) {
             $("#alert .msg").text(err.responseJSON);
             $("#alert").fadeIn(500);
             console.log(err);
         }
-        // LobbyData.lobbyName, LobbyData.members, LobbyData.idHash
-        // usernameInput.val("");
-        // emailInput.val("");
-        // passwordInput.val("");
+  
     });
     
 });
