@@ -35,7 +35,7 @@ function partySelectionFinishHandler(event) {
 }
 
 function partySelectionResetHandler(event) {
-
+  
 }
 
 // --------------- Party Valid Vote Modal Handlers ---------------

@@ -30,7 +30,9 @@ function messageHandler(chatMessage) {
 // Initialize socket instance on server and setup framework for lobby socket creation
 module.exports = function(server, middleware) {
   const io = require("socket.io")(server, {
-    transports: ["websocket", "polling"]
+    transports: ["websocket", "polling"],
+    pingTimeout: 5000,
+    pingInterval: 250
   });
 
   // Register the middleware for the socket

@@ -32,6 +32,10 @@ function updateProgressBar(duration, currentTime) {
 function updatePage(gameState) {
   console.log("Updated Game State");
   console.log(gameState);
+
+  // Update quests
+
+  // Display appropriate modal to user
   switch(gameState.phase) {
     case "Character Reveal":
       break;
@@ -48,15 +52,17 @@ function updatePage(gameState) {
       break;
     case "Party Voting":
       if (gameState.inParty) {
-
+        offerPartyPassVote(gameState)
       }
       else {
         stallUser(gameState);
       }
       break;
     case "Computing":
+      stallUser({ duration: 0 });
       break;
     case "Game Over":
+      stallUser({ duration: 0 });
       break;
   }
 }
@@ -97,7 +103,7 @@ function displayReveals(showDuration, data) {
 // Ask for player's approval on the candidate party
 function offerPartyValidVote(data) {
   // Display roles to pertinent characters
-  const $modal = getPartyValidVoteModal(userArray);
+  const $modal = getPartyValidVoteModal(data.party);
   displayModal($modal);
 
   // Setup intervals for page update and progressbar timer
@@ -108,7 +114,14 @@ function offerPartyValidVote(data) {
 
 // Ask for play to pass or fail the quest
 function offerPartyPassVote(data) {
+    // Display roles to pertinent characters
+    const $modal = getPartyValidVoteModal(data.party);
+    displayModal($modal);
   
+    // Setup intervals for page update and progressbar timer
+    const duration = data.duration;
+    currentTime = duration;
+    timerInterval = setInterval(() => updateProgressBar(duration, currentTime -= 100),100);
 }
 
 // Ask player to pick a candidate party
@@ -125,7 +138,7 @@ function offerPartySelection(data) {
 
 // Display the quest result to the user
 function updateQuestResult(questIndex, result) {
-
+  
 }
 
 // DUBUGGING ONLY
