@@ -60,18 +60,19 @@ $(document).ready(() => {
   $.post("/api/lobby/create", { partySize: 4}).then(code => {
     lobbyCode = code;
     $.post("/api/lobby/start-game").then(resp => {
-      if(resp === true){
+      if(resp === "Game Started"){
         // Game is ready
         $.get(`/api/game/${lobbyCode}/run`).then(success => {
+          console.log("Success!: " + JSON.stringify(success));
           if(success){
             console.log(success);
           }
-        }).catch(handleAJAXError)
+        }).catch(handleAJAXError);
       }
     }).catch(handleAJAXError);
   }).catch(handleAJAXError);
 })
 
-function handleAJAXError(err) {
-  console.log(err);
+function handleAJAXError(xhr, status,err) {
+  console.log("Error" + JSON.stringify(err));
 }

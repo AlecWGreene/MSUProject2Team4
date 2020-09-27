@@ -47,21 +47,25 @@ module.exports = function(app, sessionManager) {
                 }
               })
                 .then(reqUser => {
-                  console.log("Game ran for lobby: " + req.params.lobbyCode);
-                  console.log("User: " + JSON.stringify(reqUser));
-                  console.log("State: " + JSON.stringify(initState));
                   console.log("return data: " + JSON.stringify(initState.getRevealInfo(session.roleAssignments[reqUser.id])));
-                  return res
-                    .status(202)
-                    .json(
-                      initState.getRevealInfo(session.roleAssignments[reqUser])
-                    );
+                  res.json(
+                    initState.getRevealInfo(session.roleAssignments[reqUser.id])
+                  );
                 })
-                .catch(err => res.json(err));
+                .catch(err => {
+                  console.log("Error: " + JSON.stringify(err));
+                  res.json(err);
+                });
             })
-            .catch(err => res.json(err));
+            .catch(err => {
+              console.log("Error: " + JSON.stringify(err));
+              res.json(err);
+            });
         })
-        .catch(err => res.json(err));
+        .catch(err => {
+          console.log("Error: " + JSON.stringify(err));
+          res.json(err);
+        });
     }
   });
 

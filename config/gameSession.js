@@ -491,7 +491,12 @@ class GameState {
       case "Merlin":
         return roles
           .filter(entry => ["Minion", "Assassin"].includes(entry[1]))
-          .map(entry => entry[0]);
+          .map(entry => {
+            return {
+              name: entry[0],
+              role: entry[1]
+            };
+          });
       case "Percival":
         return roles
           .filter(entry => ["Merlin"].includes(entry[1]))

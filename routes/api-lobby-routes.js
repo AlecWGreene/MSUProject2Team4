@@ -212,7 +212,7 @@ module.exports = function(app, sessionManager) {
               .save()
               .then(() => {
                 // Continue to lobby screen
-                res.status(202).json(lobby.idhash);
+                return res.status(202).json(lobby.idhash);
               })
               .catch(err => {
                 return res.status(403).json(err);
@@ -249,7 +249,7 @@ module.exports = function(app, sessionManager) {
       lobby
         .save()
         .then(() => {
-          res.status(202).json(true);
+          return res.status(202).json("Game Started");
         })
         .catch(err => {
           return res.status(403).json(err);
