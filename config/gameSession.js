@@ -212,7 +212,7 @@ class GameSession {
   }
 
   revealCharacterInfo() {
-    let timeout = setTimeout(() => {
+    setTimeout(() => {
       this.currentPhase = "Party Selection";
       this.forcePartySelection(this.maxDuration_partySelection);
     }, 30000); /** @todo Add setting */
