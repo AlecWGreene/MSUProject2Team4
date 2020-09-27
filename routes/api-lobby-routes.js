@@ -3,6 +3,7 @@ const db = require("../models/index.js");
 const passport = require("../config/passport");
 const codeGenerator = require("../config/lobbyCodeGenerator.js");
 const isAuthenticated = require("../config/middleware/isAuthenticated.js");
+const { Op: Op } = require("sequelize");
 
 // Character set for lobby code generation
 const charSet = [
@@ -63,7 +64,7 @@ module.exports = function(app, sessionManager) {
       return -2;
     }
     // Return out if the user isn't associated with the lobby
-    else if (!lobby.userhash.split(",").includes(userModel.id)) {
+    else if (!lobby.userhash.split(",").includes(userModel.id.toString())) {
       return -1;
     }
 
@@ -243,7 +244,7 @@ module.exports = function(app, sessionManager) {
       }
 
       // Indicate game is ready to launch
-      lobby.inGame = true;
+      lobby.ingame = true;
       lobby
         .save()
         .then(() => {
@@ -281,7 +282,7 @@ module.exports = function(app, sessionManager) {
         })
           .then(users => {
             // Check if game is ready to start, then register the session with the sessionManager and redirect the users
-            if (lobby.inGame && lobby.numready === lobby.numusers) {
+            if (lobby.ingame && lobby.numready === lobby.numusers) {
               const settings = req.body.settings ? req.body.settings : {};
               sessionManager.createSession(users, settings);
               return res.status(202).redirect("/game");
@@ -290,7 +291,7 @@ module.exports = function(app, sessionManager) {
                 name: lobby.lobbyname,
                 code: lobby.idhash,
                 numReady: lobby.numready,
-                lobbyReady: lobby.inGame,
+                lobbyReady: lobby.ingame,
                 // User object passed to people in lobby
                 users: users.map(person => {
                   return {

@@ -1,5 +1,9 @@
 $(document).ready(() => {
 
+    // Hide the create/join lobby buttons from nav bar 
+    $("#create-lobby").addClass("hide");
+    $("#join-lobby").removeClass("hide");
+
     let lobbySize = 4;
     let selectArray = [];
 
