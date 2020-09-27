@@ -218,34 +218,30 @@ module.exports = function(app, sessionManager) {
   app.post("/api/lobby/leave", isAuthenticated);
 
   // POST /api/lobby/start-game -- starts the game session if conditions are valid
-  app.post(
-    "/api/lobby/start-game",
-    passport.authenticate("local"),
-    (req, res) => {
-      // Get user
-      if (!req.user) {
-        return res.status(402);
-      }
-      const user = req.user;
-
-      isLobbyHead(user).then(lobby => {
-        if (typeof lobby === "number") {
-          return res.status(403).send(lobby);
-        }
-
-        // Indicate game is ready to launch
-        lobby.inGame = true;
-        lobby
-          .save()
-          .then(() => {
-            res.status(202).json(true);
-          })
-          .catch(err => {
-            return res.status(403).json(err);
-          });
-      });
+  app.post("/api/lobby/start-game", isAuthenticated, (req, res) => {
+    // Get user
+    if (!req.user) {
+      return res.status(402);
     }
-  );
+    const user = req.user;
+
+    isLobbyHead(user).then(lobby => {
+      if (typeof lobby === "number") {
+        return res.status(403).send(lobby);
+      }
+
+      // Indicate game is ready to launch
+      lobby.inGame = true;
+      lobby
+        .save()
+        .then(() => {
+          res.status(202).json(true);
+        })
+        .catch(err => {
+          return res.status(403).json(err);
+        });
+    });
+  });
 
   // GET /api/lobby/data
   app.get("/api/lobby/data", isAuthenticated, (req, res) => {
