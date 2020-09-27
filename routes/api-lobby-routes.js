@@ -55,12 +55,15 @@ module.exports = function(app, sessionManager) {
         idhash: user.lobbyID
       }
     });
+    const userModel = await db.Lobby.findOne({
+      email: user.email
+    });
     // Return out if the lobby doesn't exist
     if (!lobby) {
       return -2;
     }
     // Return out if the user isn't associated with the lobby
-    else if (!lobby.userhash.split(",").includes(user.id)) {
+    else if (!lobby.userhash.split(",").includes(userModel.id)) {
       return -1;
     }
 
