@@ -46,13 +46,13 @@ const charSet = [
 module.exports = function(app, sessionManager) {
   async function getUserLobby(user) {
     // Return out if the user doesn't have a lobbyCode
-    if (user.lobbyCode === null) {
+    if (user.lobbyID === null) {
       return -3;
     }
     // Query db for lobby
     const lobby = await db.Lobby.findOne({
       where: {
-        idhash: user.lobbyCode
+        idhash: user.lobbyID
       }
     });
     // Return out if the lobby doesn't exist
@@ -114,7 +114,16 @@ module.exports = function(app, sessionManager) {
       })
         .then(() => {
           // Redirect user to lobby page
-          res.status(200).json(code);
+          db.User.findOne({
+            where: {
+              email: user.email
+            }
+          }).then(userModel => {
+            userModel.lobbyID = code;
+            userModel.save().then(() => {
+              res.status(202).json();
+            });
+          });
         })
         .catch(err => {
           // Send error and a 409 status
@@ -244,7 +253,7 @@ module.exports = function(app, sessionManager) {
   });
 
   // GET /api/lobby/data
-  app.get("/api/lobby/data", isAuthenticated("local"), (req, res) => {
+  app.get("/api/lobby/data", isAuthenticated, (req, res) => {
     // Get user
     if (!req.user) {
       return res.status(402);

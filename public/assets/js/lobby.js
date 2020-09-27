@@ -116,7 +116,7 @@ $(document).ready(() => {
     $("form.create-lobby").on("submit", event => {
         event.preventDefault();
   
-        $.post("http://localhost:8080/api/lobby/create",{
+        $.post("/api/lobby/create",{
             partySize: 4
         }).then(res => console.log(res))
 
