@@ -16,7 +16,7 @@ const sessionMiddleware = session({
   resave: true,
   saveUninitialized: true,
   cookie: {
-    maxAge: 1500000
+    maxAge: 1000 * 60 * 60 * 3 // 3 hours
   }
 });
 
@@ -38,7 +38,8 @@ app.engine("handlebars", handlebars({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
 // Setup game session manager
-const sessionManager = require("./config/sessionManager")();
+const SessionManager = require("./config/sessionManager");
+const sessionManager = new SessionManager();
 
 // Load our routes
 require("./routes/html-routes.js")(app);

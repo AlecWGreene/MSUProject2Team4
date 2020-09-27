@@ -6,6 +6,7 @@ class GameSession {
   constructor(userArray, customSettings) {
     // Static variables
     this.phases = [
+      "Character Reveal",
       "Party Selection",
       "Party Validation",
       "Party Voting",
@@ -113,8 +114,12 @@ class GameSession {
   // Indicates if the cached GameState is outdates
   stateCacheNeedsUpdate(state) {
     // Check if phases match
-    if (state.currentPhase !== this.currentPhase) {
+    if (state.phase !== this.currentPhase) {
       return true;
+    }
+    // One state update per character reveal
+    else if (state.phase === "Character Reveal") {
+      return false;
     }
     // Check if quest indices match
     else if (state.currentQuestIndex !== this.currentQuestIndex) {
@@ -140,9 +145,9 @@ class GameSession {
   // Change game settings
   applyCustomSettings(customSettings) {
     // Timer settings
-    this.maxDuration_partySelection = 10000;
-    this.maxDuration_partyValidVote = 10000;
-    this.maxDuration_partyPassVote = 10000;
+    this.maxDuration_partySelection = 15000;
+    this.maxDuration_partyValidVote = 15000;
+    this.maxDuration_partyPassVote = 15000;
 
     // Apply specified timeouts
     if (customSettings.timeLimits) {
@@ -198,12 +203,19 @@ class GameSession {
     }
 
     // Initialize game variables
-    this.currentPhase = "Party Selection";
+    this.currentPhase = "Character Reveal";
     this.currentKingIndex = Math.floor(Math.random() * this.users.length);
     this.gameOver = false;
     this.passedQuests = 0;
     this.currentQuestIndex = 0;
     this.ready = true;
+  }
+
+  revealCharacterInfo() {
+    setTimeout(() => {
+      this.currentPhase = "Party Selection";
+      this.forcePartySelection(this.maxDuration_partySelection);
+    }, 30000); /** @todo Add setting */
   }
 
   // Timout function for party validation phase
@@ -486,12 +498,17 @@ class GameState {
   }
 
   getRevealInfo(role) {
-    const roles = Object.entries(obj);
+    const roles = Object.entries(this.roleAssignments);
     switch (role) {
       case "Merlin":
         return roles
           .filter(entry => ["Minion", "Assassin"].includes(entry[1]))
-          .map(entry => entry[0]);
+          .map(entry => {
+            return {
+              name: entry[0],
+              role: entry[1]
+            };
+          });
       case "Percival":
         return roles
           .filter(entry => ["Merlin"].includes(entry[1]))
@@ -504,24 +521,44 @@ class GameState {
     }
   }
 
-  getPhaseInfo() {
+  getPhaseInfo(user) {
     const data = {};
 
     // Get phase and structure object with phase data
     data.phase = this.currentPhase;
+    data.duration = 30000;
     data.king = this.users[this.currentKingIndex];
+    if (data.king.id === user.id) {
+      data.isKing = true;
+    }
     data.history = this.questResults;
     switch (data.phase) {
       case "Party Selection":
         // Show previous quest result
         if (this.currentQuestIndex !== 0) {
-          data.prevParty = this.currentParty;
+          data.prevParty = this.currentParty.map(user => {
+            return {
+              id: user.id,
+              name: user.username
+            };
+          });
           data.prevFails = this.numFails;
         }
+        data.users = this.users.map(user => {
+          return {
+            id: user.id,
+            name: user.username
+          };
+        });
         break;
       case "Party Validation":
         // Show candidate party
-        data.party = this.candidateParty;
+        data.party = this.candidateParty.map(user => {
+          return {
+            id: user.id,
+            name: user.username
+          };
+        });
         data.votes = {};
         for (const user of this.users) {
           // If user vas voted
@@ -534,7 +571,12 @@ class GameState {
         break;
       case "Party Voting":
         // Show who voted to send the party
-        data.party = this.currentParty;
+        data.party = this.currentParty.map(user => {
+          return {
+            id: user.id,
+            name: user.username
+          };
+        });
         data.votes = {};
         for (const user of this.users) {
           data.votes[user.username] = this.prevPartyValidVotes[user.id];
