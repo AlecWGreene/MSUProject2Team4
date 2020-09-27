@@ -486,7 +486,7 @@ class GameState {
   }
 
   getRevealInfo(role) {
-    const roles = Object.entries(obj);
+    const roles = Object.entries(this.roleAssignments);
     switch (role) {
       case "Merlin":
         return roles

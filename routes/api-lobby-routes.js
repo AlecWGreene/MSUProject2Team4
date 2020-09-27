@@ -65,7 +65,7 @@ module.exports = function(app, sessionManager) {
       return -2;
     }
     // Return out if the user isn't associated with the lobby
-    else if (!lobby.userhash.split(",").includes(userModel.id.toString())) {
+    else if (!lobby.userhash.split(",").includes(user.id.toString())) {
       return -1;
     }
 
@@ -80,7 +80,7 @@ module.exports = function(app, sessionManager) {
     }
 
     if (lobby.creatorid === user.id) {
-      return true;
+      return lobby;
     } else {
       return false;
     }
@@ -126,7 +126,7 @@ module.exports = function(app, sessionManager) {
           }).then(userModel => {
             userModel.lobbyID = code;
             userModel.save().then(() => {
-              res.status(202).json();
+              res.status(202).json(code);
             });
           });
         })
@@ -241,7 +241,7 @@ module.exports = function(app, sessionManager) {
 
     isLobbyHead(user).then(lobby => {
       if (typeof lobby === "number") {
-        return res.status(403).send(lobby);
+        return res.status(403).json(lobby);
       }
 
       // Indicate game is ready to launch

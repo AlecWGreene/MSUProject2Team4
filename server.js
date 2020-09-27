@@ -38,7 +38,8 @@ app.engine("handlebars", handlebars({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
 // Setup game session manager
-const sessionManager = require("./config/sessionManager")();
+const SessionManager = require("./config/sessionManager");
+const sessionManager = new SessionManager();
 
 // Load our routes
 require("./routes/html-routes.js")(app);
