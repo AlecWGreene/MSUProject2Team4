@@ -126,20 +126,24 @@ $(document).ready(() => {
         // createLobby();
 
         // function createLobby() {
-            $.ajax({
-                type: "POST",
-                url: "/api/lobby/create",
-                data: JSON.stringify({
-                    partySize: 4
-                }),
-                dataType: "json",
-                contentType: "application/json",                
-            })
-                .then(() => {
-                    // handle error
-                })
-                .catch(handleLoginErr);
+            // $.ajax({
+            //     type: "POST",
+            //     url: "/api/lobby/create",
+            //     data: JSON.stringify({
+            //         partySize: 4
+            //     }),
+            //     dataType: "json",
+            //     contentType: "application/json",                
+            // })
+            //     .then(() => {
+            //         // handle error
+            //     })
+            //     .catch(handleLoginErr);
         // }
+
+        $.post("http://localhost:8080/api/lobby/create",{
+            partySize: 4
+        }).then(res => console.log(res));
     
         function handleLoginErr(err) {
             $("#alert .msg").text(err.responseJSON);

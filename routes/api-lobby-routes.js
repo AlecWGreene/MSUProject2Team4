@@ -2,6 +2,7 @@
 const db = require("../models/index.js");
 const passport = require("../config/passport");
 const codeGenerator = require("../config/lobbyCodeGenerator.js");
+const isAuthenticated = require("../config/middleware/isAuthenticated.js");
 
 // Character set for lobby code generation
 const charSet = [
@@ -81,7 +82,7 @@ module.exports = function(app, sessionManager) {
   }
 
   // POST /api/lobby/create -- creates a new lobby
-  app.post("/api/lobby/create", passport.authenticate("local"), (req, res) => {
+  app.post("/api/lobby/create", isAuthenticated, (req, res) => {
     // Get user
     if (!req.user) {
       return res.status(403);
@@ -98,7 +99,13 @@ module.exports = function(app, sessionManager) {
       attributes: ["idhash"]
     }).then(data => {
       // Create a new lobby with the api caller as the head
-      const code = codeGenerator(data, charSet);
+      let set = data.map(model => model.idhash);
+      if (set.length === 0) {
+        set = ["00000000"];
+      }
+      const code = codeGenerator(set, charSet);
+      console.log("Code: " + code);
+      console.log("Data: " + req.body);
       db.Lobby.create({
         lobbyname: req.body.name ? req.body.name : `Lobby-${code}`,
         idhash: code,
@@ -119,103 +126,95 @@ module.exports = function(app, sessionManager) {
   });
 
   // DELETE /api/lobby/delete -- deletes an existing lobby if it is NOT in game session
-  app.delete(
-    "/api/lobby/delete",
-    passport.authenticate("local"),
-    (req, res) => {
-      // Get user
-      if (!req.user) {
-        return res.status(403);
-      }
-      const user = req.user;
-
-      // Check that user is the lobby head
-      isLobbyHead(user).then(result => {
-        // Return out if an error code is the result
-        if (typeof result === "number") {
-          return res.status(401).send(result);
-        }
-
-        // Return out if the user is not the head
-        if (!result) {
-          return res.status(403);
-        } else {
-          db.Lobby.destroy({
-            where: {
-              idhash: user.lobbyCode
-            }
-          })
-            .then(() => {
-              return res.status(200).redirect("/home");
-            })
-            .catch(err => {
-              return res.status(409).json(err);
-            });
-        }
-      });
+  app.delete("/api/lobby/delete", isAuthenticated, (req, res) => {
+    // Get user
+    if (!req.user) {
+      return res.status(403);
     }
-  );
+    const user = req.user;
+
+    // Check that user is the lobby head
+    isLobbyHead(user).then(result => {
+      // Return out if an error code is the result
+      if (typeof result === "number") {
+        return res.status(401).send(result);
+      }
+
+      // Return out if the user is not the head
+      if (!result) {
+        return res.status(403);
+      } else {
+        db.Lobby.destroy({
+          where: {
+            idhash: user.lobbyCode
+          }
+        })
+          .then(() => {
+            return res.status(200).redirect("/home");
+          })
+          .catch(err => {
+            return res.status(409).json(err);
+          });
+      }
+    });
+  });
 
   // POST /api/lobby/join/ -- joins a lobby with the specified code
-  app.post(
-    "/api/lobby/join/:lobbyCode",
-    passport.authenticate("local"),
-    (req, res) => {
-      // Get user
-      if (!req.user) {
-        return res.status(402);
-      }
-      const user = req.user;
-
-      // Find the lobby
-      db.Lobby.findOne({
-        where: {
-          idhash: req.params.lobbyCode
-        }
-      })
-        .then(result => {
-          if (result.maxusers <= result.numusers) {
-            return res.status(406).send("Lobby is Full");
-          }
-
-          // Add user to hash
-          const users = result.userhash.split(",");
-
-          // If user is in the lobby already, redirect them
-          if (users.includes(user.id)) {
-            return res.status(202).redirect(`/lobby/${result.lobbyCode}`);
-          }
-
-          // Add user to lobby
-          users.push(user.id);
-          result.numusers++;
-
-          // update database entry and redirect user
-          result
-            .save()
-            .then(() => {
-              // Update user lobby field
-              user.lobbyHash = result.lobbyCode;
-              user
-                .save()
-                .then(() => {
-                  // Continue to lobby screen
-                  return res.status(202).redirect(`/lobby/${result.lobbyCode}`);
-                })
-                .catch(err => {
-                  return res.status(403).json(err);
-                });
-            })
-            .catch(err => {
-              return res.status(403).json(err);
-            });
-        })
-        .catch(err => {
-          // Send 403 status if no lobbies are found
-          return res.status(403).json(err);
-        });
+  app.post("/api/lobby/join/:lobbyCode", isAuthenticated, (req, res) => {
+    // Get user
+    if (!req.user) {
+      return res.status(402);
     }
-  );
+    const user = req.user;
+
+    // Find the lobby
+    db.Lobby.findOne({
+      where: {
+        idhash: req.params.lobbyCode
+      }
+    })
+      .then(result => {
+        if (result.maxusers <= result.numusers) {
+          return res.status(406).send("Lobby is Full");
+        }
+
+        // Add user to hash
+        const users = result.userhash.split(",");
+
+        // If user is in the lobby already, redirect them
+        if (users.includes(user.id)) {
+          return res.status(202).redirect(`/lobby/${result.lobbyCode}`);
+        }
+
+        // Add user to lobby
+        users.push(user.id);
+        result.numusers++;
+
+        // update database entry and redirect user
+        result
+          .save()
+          .then(() => {
+            // Update user lobby field
+            user.lobbyHash = result.lobbyCode;
+            user
+              .save()
+              .then(() => {
+                // Continue to lobby screen
+                return res.status(202).redirect(`/lobby/${result.lobbyCode}`);
+              })
+              .catch(err => {
+                return res.status(403).json(err);
+              });
+          })
+          .catch(err => {
+            return res.status(403).json(err);
+          });
+      })
+      .catch(err => {
+        // Send 403 status if no lobbies are found
+        return res.status(403).json(err);
+      });
+  });
 
   // POST /api/lobby/leave/ -- leaves the current lobby the user is in
   app.post("/api/lobby/leave", passport.authenticate("local"));
