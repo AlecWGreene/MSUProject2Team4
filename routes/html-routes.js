@@ -1,5 +1,6 @@
 // Requiring our custom middleware for checking if a user is logged in
 const isAuthenticated = require("../config/middleware/isAuthenticated");
+const db = require("../models");
 
 module.exports = function(app) {
   app.get("/", (req, res) => {
@@ -40,13 +41,49 @@ module.exports = function(app) {
     res.render("games", { layout: "userPage" });
   });
 
-  // Render create lobby page
-  app.get("/lobby/create", isAuthenticated, (req, res) => {
-    res.render("createLobby", { layout: "userPage" });
+  // Render active lobby waiting room
+  app.get("/lobby/wait", isAuthenticated, (req, res) => {
+    res.render("activeLobby", { layout: "userPage" });
   });
 
   // Render join lobby page
   app.get("/lobby/join", isAuthenticated, (req, res) => {
     res.render("joinLobby", { layout: "userPage" });
+  });
+
+  app.get("/lobby/create", (req, res) => {
+    const renderPartial = {
+      layout: "userPage",
+      allPlayers: [],
+      allLobbies: []
+    };
+    db.User.findAll({
+      where: {
+        status: true
+      }
+    })
+      .then(dbUser => {
+        for (let i = 0; i < dbUser.length; i++) {
+          let select = false;
+          if (dbUser[i].dataValues.id === parseInt(req.query.id)) {
+            select = Boolean(req.query.select);
+          }
+          renderPartial.allPlayers.push(dbUser[i].dataValues);
+          renderPartial.allPlayers[i].select = select;
+        }
+        db.Lobby.findAll()
+          .then(dbLobby => {
+            for (let i = 0; i < dbLobby.length; i++) {
+              renderPartial.allLobbies.push(dbLobby[i].dataValues);
+            }
+            res.render("createLobby", renderPartial);
+          })
+          .catch(err => {
+            res.status(401).json(err);
+          });
+      })
+      .catch(err => {
+        res.status(401).json(err);
+      });
   });
 };

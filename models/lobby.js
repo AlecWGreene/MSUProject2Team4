@@ -1,29 +1,37 @@
 // Creating our User model
 module.exports = function(sequelize, DataTypes) {
   const Lobby = sequelize.define("Lobby", {
-    lobbyName: {
+    lobbyname: {
       type: DataTypes.STRING,
       allowNull: false
     },
 
-    members: {
-      type: DataTypes.STRING,
-
-      allowNull: true,
-
-      defaultValue: null
+    idhash: {
+      type: DataTypes.STRING
     },
 
-    idHash: {
-      type: DataTypes.STRING,
+    userhash: {
+      type: DataTypes.STRING
+    },
 
-      // allowNull: false,
+    creatorid: {
+      type: DataTypes.INTEGER
+    },
 
-      // unique: true
+    ingame: {
+      type: DataTypes.BOOLEAN
+    },
 
-      allowNull: true,
+    maxusers: {
+      type: DataTypes.INTEGER
+    },
 
-      defaultValue: null
+    numusers: {
+      type: DataTypes.INTEGER
+    },
+
+    numready: {
+      type: DataTypes.INTEGER
     }
   });
 

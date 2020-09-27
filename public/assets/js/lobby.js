@@ -1,5 +1,9 @@
 $(document).ready(() => {
 
+    // Hide the create/join lobby buttons from nav bar 
+    $("#create-lobby").addClass("hide");
+    $("#join-lobby").removeClass("hide");
+
     let lobbySize = 4;
     let selectArray = [];
 
@@ -113,64 +117,21 @@ $(document).ready(() => {
         }
     });
 
-    // $("#create-lobby").on("click", function(event) {
-    //     // lobbySize
-    //     // selectArray
-    //     $("#invite-players")[0].checked
-    //     $("#lobby-name")[0].value
-        
-    // });
-
-    // $.get("/api/user_data").then(data => {
-    //     $(".user").text(data.username);
-    // });
-
     $("form.create-lobby").on("submit", event => {
         event.preventDefault();
-        const LobbyData = {
-            lobbyName: $("#lobby-name")[0].value,
-            members: selectArray,
-            idHash: passwordInput.val().trim()
-        };
-    
-        if (!LobbyData.lobbyName || !LobbyData.members || !LobbyData.idHash) {
-          return;
+  
+        $.post("/api/lobby/create",{
+            partySize: 4
+        }).then(res => console.log(res))
+
+        .catch(handleLoginErr);
+
+        function handleLoginErr(err) {
+            $("#alert .msg").text(err.responseJSON);
+            $("#alert").fadeIn(500);
+            console.log(err);
         }
-        // If we have an email and password, run the signUpUser function
-        createLobby(LobbyData.lobbyName, LobbyData.members, LobbyData.idHash);
-        usernameInput.val("");
-        emailInput.val("");
-        passwordInput.val("");
+  
     });
     
-    // Does a post to the signup route. If successful, we are redirected to the members page
-    // Otherwise we log any errors
-    function createLobby(username, email, password) {
-        $.post("/api/lobby/create", {
-            username: username,
-            email: email,
-            password: password
-        })
-            .then(() => {
-            window.location.replace("/home");
-            // If there's an error, handle it by throwing up a bootstrap alert
-            })
-            .catch(handleLoginErr);
-    }
-
-    function handleLoginErr(err) {
-        $("#alert .msg").text(err.responseJSON);
-        $("#alert").fadeIn(500);
-    }
 });
-
-// // Send the POST or PUT request depending on state
-// $.get("/api/lobby", pageState)
-//     .then(() => {
-//         // Reload the page to get the updated list
-//         location.reload();
-//     })
-//     .fail(err => {
-//         // If there's an error, log the error
-//         console.log(err);
-//     });
