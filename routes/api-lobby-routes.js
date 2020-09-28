@@ -255,6 +255,14 @@ module.exports = function(app, sessionManager) {
         return res.status(403).json(lobby);
       }
 
+      // Check all users are ready
+      const readyUsers = lobby.numReady ? lobby.numReady : [];
+      for (const u of lobby.userhash.split(",")) {
+        if (!readyUsers.includes(u)) {
+          return res.status(406).json("User's aren't ready");
+        }
+      }
+
       // Indicate game is ready to launch
       lobby.ingame = true;
       lobby
