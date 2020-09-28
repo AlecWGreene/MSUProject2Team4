@@ -82,7 +82,7 @@ module.exports = function(app, sessionManager) {
     if (lobby.creatorid === user.id) {
       return lobby;
     } else {
-      return false;
+      return 0;
     }
   }
 
@@ -196,7 +196,7 @@ module.exports = function(app, sessionManager) {
 
         // If user is in the lobby already, redirect them
         if (users.includes(user.id.toString())) {
-          return res.status(202).redirect(`/lobby/wait`);
+          return res.status(202).redirect("/lobby/wait");
         }
 
         user.lobbyID = lobby.idhash;
@@ -252,7 +252,7 @@ module.exports = function(app, sessionManager) {
     }
     const user = req.user;
 
-    isLobbyHead(user).then(lobby => {
+    getUserLobby(user).then(lobby => {
       if (typeof lobby === "number") {
         return res.status(403).json(lobby);
       }
@@ -270,7 +270,9 @@ module.exports = function(app, sessionManager) {
       lobby
         .save()
         .then(() => {
-          return res.status(202).json({message: "Game Started", code: lobby.idhash});
+          return res
+            .status(202)
+            .json({ message: "Game Started", code: lobby.idhash });
         })
         .catch(err => {
           return res.status(409).json(err);

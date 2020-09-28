@@ -67,6 +67,27 @@ module.exports = function(app, sessionManager) {
           res.json(err);
         });
     }
+    // If lobby already exists
+    else {
+      // Get ssion and state
+      const session = sessionManager.sessionDictionary[req.params.lobbyCode];
+      const initState = new GameState(session);
+      db.User.findOne({
+        where: {
+          email: req.user.email
+        }
+      })
+        .then(reqUser => {
+          session.revealCharacterInfo();
+          return res.json(
+            initState.getRevealInfo(session.roleAssignments[reqUser.id])
+          );
+        })
+        .catch(err => {
+          console.log("Error: " + JSON.stringify(err));
+          res.json(err);
+        });
+    }
   });
 
   // POST Route -- game/validVote
