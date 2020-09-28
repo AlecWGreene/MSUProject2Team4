@@ -25,7 +25,7 @@ button{
 }
 
 .container, button:link, button:visited, button:hover, a:link, a:visited, a:hover, image:hover {
-  cursor: url(/assets/img/dagger-sm.png), auto;
+  cursor: url(/assets/img/dagger-sm.png) 5 24, auto;
   position: relative;
 }
 
