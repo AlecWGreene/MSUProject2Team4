@@ -380,17 +380,36 @@ module.exports = function(app, sessionManager) {
         db.User.findAll({
           where: {
             id: {
-              [Op.in]: lobby.numReady.split(",").map(str => Number(str))
+              [Op.in]: !lobby.numReady
+                ? []
+                : lobby.numReady.split(",").map(str => Number(str))
             }
           }
-        }).then(readyUsers => {
-          let newReadyUsers = readyUsers;
-          if (readyUsers.includes(user.id)) {
-            readyUsers.splice();
-          }
-        }).catch(err => {
-          res.status(404).json(err);
-        });
+        })
+          .then(readyUsers => {
+            // Toggle user inclusion in readyUsers
+            let toggleOn;
+            const newReadyUsers = readyUsers;
+            if (readyUsers.includes(user.id)) {
+              toggleOn = false;
+              newReadyUsers.splice(readyUsers.indexOf(user.id), 1);
+            } else {
+              toggleOn = true;
+              newReadyUsers.push(user.id);
+            }
+
+            // Update lobby value
+            lobby.numReady = newReadyUsers.join(",");
+            lobby
+              .save()
+              .then(() => {
+                res.status(200).json(toggleOn.toString());
+              })
+              .catch(err => res.status(502).json(err));
+          })
+          .catch(err => {
+            res.status(404).json(err);
+          });
       })
       .catch(err => {
         return res.status(400).json("Error from getUserLobby.catch 352");
