@@ -133,6 +133,30 @@ input {
   *overflow: hidden;
 }
 
+.list-group-item, .list-group-item-action {
+  color:whitesmoke;
+  background-color: rgba(235, 201, 10, 0.562);
+  border-color: black;
+  border-radius: 5px!important; 
+  margin: 1px;
+}
+
+.lobby-items {
+  background-color:#000000af;
+  margin: auto;
+  padding: none;
+  border-radius: 5px;
+}
+
+.lobby-name {
+  padding: none;
+}
+
+.add-lobby, .join-lobby {
+  padding: 0px;
+  float: left;
+}
+
 .lobby-size {
   border: 0; 
   padding: 5px; 
@@ -152,8 +176,22 @@ input {
 }
 
 #player-btn {
-  border-color: rgba(235, 201, 10, 0.562); 
+  border-color: none;
 }
+
+.player-names, .player-names:active, .player-names:hover {
+  background-color: whitesmoke;
+  color:black!important;
+  border-radius: 5px!important;
+}
+
+.col-1 {
+  padding: 0px;
+}
+#player-select-form {
+  color: ;
+}
+
 
 #quest {
   width: 218px; 
