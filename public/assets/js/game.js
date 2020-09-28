@@ -45,15 +45,15 @@ function getWaitModal(gamePhase) {
 }
 
 // Get modal for selecting a party
-function getPartySelectModal(userArray) {
+function getPartySelectModal(data) {
   const modal = getModalTemplate();
 
   // Set the header
-  $($(modal).children()[0]).text("Select a party");
+  $($(modal).children()[0]).text("Select a party of " + data.partySize + " users");
 
   // Set the body
   const choiceBody = $("<ul>").addClass("selection-list");
-  for (const user of userArray) {
+  for (const user of data.users) {
     const userItem = $("<li>")
       .addClass("selection-item")
       .attr("data-id", user.id)
@@ -86,7 +86,7 @@ function getPartyValidVoteModal(userArray) {
   $($(modal).children()[0]).text("Do you approve this party?");
 
   // Set the body
-  $($(modal).children()[1]).text(userArray.map(us => us.username).join(", "));
+  $($(modal).children()[1]).text(userArray.map(us => us.name).join(", "));
 
   // Set the buttons
   const vetoBtn = $("<button>")

@@ -64,6 +64,8 @@ function updatePage(gameState) {
     case "Computing":
       stallUser({ duration: 0 });
       break;
+    case "Assassin Hunting":
+      break;
     case "Game Over":
       let modal = getModalTemplate();
       $(modal).children()[0].text("Game Over!")
@@ -72,6 +74,7 @@ function updatePage(gameState) {
   }
 
   addEventHandlers(gameState.phase);
+  updateQuestResult(gameState);
 }
 
 // Remove existing modals and display a new one
@@ -146,8 +149,19 @@ function offerPartySelection(data) {
 }
 
 // Display the quest result to the user
-function updateQuestResult(questIndex, result) {
-  
+function updateQuestResult(gameState) {
+  for (let i = 0; i < 5; i++) {
+    if ($(`#quest-${i}`).hasClass("empty") && i < gameState.history.length) {
+      if (gameState.history[i] === 1) {
+        $(`#quest-${i}`).removeClass("empty");
+        $(`#quest-${i}`).addClass("pass");
+      }
+      else if (gameState.history[i] === -1) {
+        $(`#quest-${i}`).removeClass("empty");
+        $(`#quest-${i}`).addClass("fail");
+      }
+    }
+  }
 }
 
 // DUBUGGING ONLY
@@ -161,11 +175,11 @@ $(document).ready(() => {
           if(resp.message === "Game Started"){
             if(data){
               displayReveals(30000, data);
-              updateInterval = setInterval(() => checkForUpdate(), 5000);
+              updateInterval = setInterval(() => checkForUpdate(), 1000);
             } 
           }else{
               // If user refresehd the page mid game
-              updateInterval = setInterval(() => checkForUpdate(), 5000);
+              updateInterval = setInterval(() => checkForUpdate(), 1000);
               console.log("Welcome back!");
             }
         }).catch(handleAJAXError); 
