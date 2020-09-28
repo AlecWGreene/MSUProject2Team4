@@ -24,10 +24,6 @@
                             <label for="lobby-name">Search Lobby</label>
                             <input type="text" class="form-control text-center mt-3" id="lobby-name" placeholder="Type Lobby Name">
                         </div>
-                        {{!-- <div class="form-group text-center lobby-size">
-                            <label for="lobby-size">Party Size</label>
-                            <input type="text" class="form-control text-center" id="lobby-size" placeholder="4" value="4">
-                        </div> --}}
                         <button type="submit" class="btn btn-block gradient gold-square mt-3" id="create-lobby">Join</button>
                         </br>
                     </form>
@@ -35,22 +31,15 @@
 
                 <div class="col-lg-6 gold mb-10" style="background-color: #00000049; border-radius: 5px; margin: 20px;">
                     <form class="create-lobby">
-                        <div class="form-check text-center" id="player-select-check">
-                            {{!-- <input type="checkbox" class="form-check-input" id="invite-players">
-                            <label class="form-check-label" for="invite-players">Invite Players</label> --}}
-
+                        {{!-- <div class="form-check text-center" id="player-select-check">
                             <label for="invite-players"><input type="checkbox" id="invite-players">Invite Players</label>
+                        </div> --}}
+                        <div class="form-group lobby-select-form">
+                            <br>
+                            <label for="lobby-select">All Lobbies</label>
+                            <div class="list-group lobby-select">
+                            </br>
                             
-                        </div>
-                        <div class="form-group" id="player-select-form">
-                            <label for="player-select">View Players</label>
-                            <div class="list-group" id="player-select">
-
-                                {{#each allPlayers}}
-                                
-                                    {{> players-block}}
-
-                                {{/each}}
                             </div>
                         </div>
                     </form>
@@ -62,7 +51,6 @@
 
 <!-- JS, Popper.js, and jQuery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script type="text/javascript" src="/assets/js/lobby.js"></script>
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/assets/js/joinLobby.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
