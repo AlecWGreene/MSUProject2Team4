@@ -207,12 +207,22 @@ module.exports = function(app, sessionManager) {
           .save()
           .then(() => {
             // Update user lobby field
-            user.lobbyHash = lobby.lobbyCode;
-            user
-              .save()
-              .then(() => {
-                // Continue to lobby screen
-                return res.status(202).json(lobby.idhash);
+            db.User.findOne({
+              where: {
+                email: user.email
+              }
+            })
+              .then(dbUser => {
+                dbUser.lobbyHash = lobby.lobbyCode;
+                dbUser
+                  .save()
+                  .then(() => {
+                    // Continue to lobby screen
+                    return res.status(202).json(lobby.idhash);
+                  })
+                  .catch(err => {
+                    return res.status(403).json(err);
+                  });
               })
               .catch(err => {
                 return res.status(403).json(err);
