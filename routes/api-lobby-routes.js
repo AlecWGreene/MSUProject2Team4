@@ -267,9 +267,11 @@ module.exports = function(app, sessionManager) {
 
       // If game is already running
       if (lobby.ingame) {
-        return res
-          .status(202)
-          .json({ message: "Welcome Back", code: lobby.idhash, name: user.username });
+        return res.status(202).json({
+          message: "Welcome Back",
+          code: lobby.idhash,
+          name: user.username
+        });
       }
 
       // Indicate game is ready to launch
@@ -277,9 +279,11 @@ module.exports = function(app, sessionManager) {
       lobby
         .save()
         .then(() => {
-          return res
-            .status(202)
-            .json({ message: "Game Started", code: lobby.idhash, name: user.username });
+          return res.status(202).json({
+            message: "Game Started",
+            code: lobby.idhash,
+            name: user.username
+          });
         })
         .catch(err => {
           return res.status(409).json(err);
