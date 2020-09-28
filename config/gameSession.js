@@ -10,6 +10,7 @@ class GameSession {
       "Party Selection",
       "Party Validation",
       "Party Voting",
+      "Assassin Hunting",
       "Computing",
       "Game Over"
     ];
@@ -148,6 +149,7 @@ class GameSession {
     this.maxDuration_partySelection = 15000;
     this.maxDuration_partyValidVote = 15000;
     this.maxDuration_partyPassVote = 15000;
+    this.maxDuration_assassinGuess = 15000;
 
     // Apply specified timeouts
     if (customSettings.timeLimits) {
@@ -162,6 +164,10 @@ class GameSession {
       if (customSettings.timeLimits.partyPassVote) {
         this.maxDuration_partyPassVote =
           customSettings.timeLimits.partyPassVote;
+      }
+      if (customSettings.timeLimits.assassingGuess) {
+        this.maxDuration_assassinGuess =
+          customSettings.timeLimits.assassingGuess;
       }
     }
 
@@ -215,7 +221,7 @@ class GameSession {
     setTimeout(() => {
       this.currentPhase = "Party Selection";
       this.forcePartySelection(this.maxDuration_partySelection);
-    }, 30000); /** @todo Add setting */
+    }, 15000); /** @todo Add setting */
   }
 
   // Timout function for party validation phase
@@ -260,6 +266,28 @@ class GameSession {
         }
       }
     }, duration);
+  }
+
+  // Force a timeout on the guess of merlin by the assassin
+  forceAssassinGuess(duration) {
+    this.timeout_Assassination = setTimeout(() => {
+      this.phase = "Game Over";
+      this.winner = 1;
+    }, duration);
+  }
+
+  // Record the assassin's guess of merlin by id
+  setAssassinGuess(userId) {
+    if (this.phase !== "Assassin Hunting") {
+      return;
+    }
+    clearTimeout(this.timeout_Assassination);
+    this.phase = "Game Over";
+    if (this.roleAssignments[userId] === "Merlin") {
+      this.winner = -1;
+    } else {
+      this.winner = 1;
+    }
   }
 
   // Assign users to a candidate party
@@ -322,7 +350,7 @@ class GameSession {
     }
 
     // Allocate user's vote
-    this.partyValidVotes[user.id] = vote;
+    this.partyValidVotes[user.id] = parseInt(vote);
 
     // If all votes are in, then tally them
     if (Object.keys(this.partyValidVotes).length === this.users.length) {
@@ -346,7 +374,6 @@ class GameSession {
       // If the vote passes, then set the candidate as current party otherwise restart the vote
       if (numYes >= numNo) {
         this.setParty(this.candidateParty);
-        this.numFails = 0;
         this.candidateParty = [];
         this.currentPhase = "Party Voting";
       } else {
@@ -386,7 +413,7 @@ class GameSession {
 
       this.partyPassVotes[user.id] = 1;
     } else {
-      this.partyPassVotes[user.id] = vote;
+      this.partyPassVotes[user.id] = parseInt(vote);
     }
 
     // Check if all votes are cast
@@ -411,22 +438,20 @@ class GameSession {
       // Increment counter if quest didn't fail
       this.questResults[this.currentQuestIndex] = failed ? -1 : 1;
       this.passedQuests += failed ? 0 : 1;
+      this.numFails += failed ? 1 : 0;
       this.currentQuestIndex++;
 
-      // If all quests are done end game
-      if (this.currentQuestIndex === 5) {
-        this.gameOver = true;
-        this.currentPhase = "Game Over";
-      }
       // If number of passed quests is met
-      else if (this.passedQuests === 3) {
+      if (this.passedQuests === 3) {
         this.gameOver = true;
-        this.currentPhase = "Game Over";
+        this.currentPhase = "Assassin Hunting";
+        this.forceAssassinGuess(this.maxDuration_assassinGuess);
       }
       // If number of failed quests is met
       else if (this.numFails === 3) {
         this.gameOver = true;
         this.currentPhase = "Game Over";
+        this.winner = -1;
       }
       // Move to next quest
       else {
@@ -471,7 +496,7 @@ class GameState {
     // Get role assignments and swap out ids for user objects
     let roles = Object.entries(this.roleAssignments);
     roles = roles.map(entry => [
-      this.users.find(tUser => tUser.id === entry[0]),
+      this.users.find(tUser => tUser.id.toString() === entry[0]),
       entry[1]
     ]);
     switch (role) {
@@ -575,9 +600,23 @@ class GameState {
           data.votes[user.username] = this.prevPartyValidVotes[user.id];
         }
         break;
+      case "Assassin Hunting":
+        data.assassinId = Object.values(this.roleAssignments)
+          .filter(arr => arr[1] === "Assassin")
+          .map(arr => parseInt(arr[0]));
+        data.assassin = this.users.find(us => us.id === data.assassinId[0]);
+        data.isAssassin = user.id === data.assassinId;
+        data.users = this.users.map(user => {
+          return {
+            id: user.id,
+            name: user.username
+          };
+        });
+        break;
       case "Computing":
         break;
       case "Game Over":
+        data.winner = this.winner;
         break;
     }
     return data;

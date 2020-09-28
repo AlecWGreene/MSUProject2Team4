@@ -90,6 +90,7 @@ module.exports = function(app, sessionManager) {
     if (!req.body.vote || Math.abs(req.body.vote) !== 1) {
       return res.status(403).json("Vote of 1 or -1 required");
     }
+    console.log("Valid vote cast");
 
     const currentSession =
       sessionManager.sessionDictionary[req.params.lobbyCode];
@@ -103,6 +104,7 @@ module.exports = function(app, sessionManager) {
     if (!req.body.vote || Math.abs(req.body.vote) !== 1) {
       return res.status(403).json("Vote of 1 or -1 required");
     }
+    console.log("Pass vote cast");
 
     const currentSession =
       sessionManager.sessionDictionary[req.params.lobbyCode];
@@ -120,6 +122,7 @@ module.exports = function(app, sessionManager) {
       if (!req.body.userArray) {
         return res.status(402).json("Users must be selected for the party");
       }
+      console.log("Party selection cast");
 
       const currentSession =
         sessionManager.sessionDictionary[req.params.lobbyCode];
@@ -127,7 +130,7 @@ module.exports = function(app, sessionManager) {
       // eslint-disable-next-line prettier/prettier
       const partyArray = userArray.filter(user => req.body.userArray.includes(user.id) );
       currentSession.setPartySelection(partyArray);
-      return res.json(new GameState(currentSession).getPhaseInfo());
+      return res.json(new GameState(currentSession).getPhaseInfo(req.user));
     }
   );
 
@@ -136,10 +139,6 @@ module.exports = function(app, sessionManager) {
     const cache = req.body.cache;
     const currentSession =
       sessionManager.sessionDictionary[req.params.lobbyCode];
-    console.log("Comparing States");
-    //console.log(new GameState(currentSession).getPhaseInfo(req.user));
-    console.log(req.body);
-    console.log("-----------------------------------------------");
     if (!cache) {
       return res
         .status(202)

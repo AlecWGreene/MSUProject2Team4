@@ -45,15 +45,15 @@ function getWaitModal(gamePhase) {
 }
 
 // Get modal for selecting a party
-function getPartySelectModal(userArray) {
+function getPartySelectModal(data) {
   const modal = getModalTemplate();
 
   // Set the header
-  $($(modal).children()[0]).text("Select a party");
+  $($(modal).children()[0]).text("Select a party of " + data.partySize + " users");
 
   // Set the body
   const choiceBody = $("<ul>").addClass("selection-list");
-  for (const user of userArray) {
+  for (const user of data.users) {
     const userItem = $("<li>")
       .addClass("selection-item")
       .attr("data-id", user.id)
@@ -79,14 +79,14 @@ function getPartySelectModal(userArray) {
 }
 
 // Get modal for yes or no votes on a proposed party
-function getPartyValidVoteModal(message) {
+function getPartyValidVoteModal(userArray) {
   const modal = getModalTemplate();
 
   // Set the header
   $($(modal).children()[0]).text("Do you approve this party?");
 
   // Set the body
-  $($(modal).children()[1]);
+  $($(modal).children()[1]).text(userArray.map(us => us.name).join(", "));
 
   // Set the buttons
   const vetoBtn = $("<button>")
@@ -135,14 +135,14 @@ function getPartyPassVoteModal() {
 function addEventHandlers(modalName) {
   // Register event handlers
   switch (modalName) {
-  case "Party Select":
+  case "Party Selection":
     $(".selection-item").on("click", partySelectionItemToggle);
     $("#finish-button").on("click", partySelectionFinishHandler);
     $("#reset-button").on("click", partySelectionResetHandler);
-  case "Party Valid Vote":
+  case "Party Validation":
       $("#veto-button").on("click", partyValidVoteVetoHandler);
     $("#approve-button").on("click", partyValidVoteApproveHandler);
-    case "Party Pass Vote":
+    case "Party Voting":
     $("#fail-button").on("click", partyPassVoteFailHandler);
     $("#pass-button").on("click", partyPassVotePassHandler);
   }

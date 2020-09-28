@@ -52,6 +52,9 @@ module.exports = function(app) {
 
   // Render join lobby page
   app.get("/lobby/join", isAuthenticated, (req, res) => {
+    if (req.user.lobbyID) {
+      res.redirect("../game");
+    }
     res.render("joinLobby", { layout: "userPage" });
   });
 
