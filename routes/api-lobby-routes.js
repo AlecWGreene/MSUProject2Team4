@@ -299,6 +299,27 @@ module.exports = function(app, sessionManager) {
               sessionManager.createSession(users, settings);
               return res.status(202).redirect("/game");
             } else {
+              // If numReady is null returnData
+              if (!lobby.numReady) {
+                const returnData = {
+                  name: lobby.lobbyname,
+                  code: lobby.idhash,
+                  numReady: [],
+                  lobbyReady: lobby.ingame,
+                  maxUsers: lobby.maxusers,
+                  // User object passed to people in lobby
+                  users: users.map(person => {
+                    return {
+                      id: person.id,
+                      username: person.username
+                    };
+                  })
+                };
+
+                return res.status(202).json(returnData);
+              }
+
+              // If numReady is not null then getReady tally
               db.User.findAll({
                 where: {
                   id: {
@@ -337,10 +358,42 @@ module.exports = function(app, sessionManager) {
           });
       })
       .catch(err => {
-        return res.status(404).json(err);
+        return res.status(403).json(err);
       });
   });
 
   // POST /api/lobby/ready-up
-  app.post("/api/lobby/ready-up", isAuthenticated, (req, res) => {});
+  app.post("/api/lobby/ready-up", isAuthenticated, (req, res) => {
+    // Get user
+    if (!req.user) {
+      return res.status(402);
+    }
+    const user = req.user;
+
+    getUserLobby(user)
+      .then(lobby => {
+        // Lobbies aren't numbers
+        if (typeof lobby === "number") {
+          return res.status(403).json(lobby);
+        }
+
+        db.User.findAll({
+          where: {
+            id: {
+              [Op.in]: lobby.numReady.split(",").map(str => Number(str))
+            }
+          }
+        }).then(readyUsers => {
+          let newReadyUsers = readyUsers;
+          if (readyUsers.includes(user.id)) {
+            readyUsers.splice();
+          }
+        }).catch(err => {
+          res.status(404).json(err);
+        });
+      })
+      .catch(err => {
+        return res.status(400).json("Error from getUserLobby.catch 352");
+      });
+  });
 };
