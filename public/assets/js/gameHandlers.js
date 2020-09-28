@@ -2,7 +2,7 @@
 
 // --------------- Party Selection Modal Handlers ---------------
 function partySelectionItemToggle(event) {
-
+    event.preventDefault();
     let target = $(event.target);
     
     if (target.hasClass("selection-item-active")) {
@@ -18,7 +18,7 @@ function partySelectionItemToggle(event) {
 }
 
 function partySelectionFinishHandler(event) {
-
+    event.preventDefault();
     let userArray = Object.values($(".selection-item")).splice(0,Object.values($(".selection-item")).length - 4).map(item => $(item).data("id"));
 
     console.log(userArray);
@@ -35,23 +35,36 @@ function partySelectionFinishHandler(event) {
 }
 
 function partySelectionResetHandler(event) {
-
+  event.preventDefault();
+  $(`.selection-item`).removeClass(".selection-item-active");
 }
 
 // --------------- Party Valid Vote Modal Handlers ---------------
-function partyValidVoteVetoHandler(event) {
-
+function partyValidVoteVetoHandler(lobbyCode, event) {
+  event.preventDefault();
+  $.post(`/api/game/${lobbyCode}/validVote`, { vote: -1 }).then(() => $modalContainer.empty()).catch(displayError);
 }
 
 function partyValidVoteApproveHandler(event) {
-
+  event.preventDefault();
+  $.post(`/api/game/${lobbyCode}/validVote`, { vote: 1 }).then(() => $modalContainer.empty()).catch(displayError)
 }
 
 // --------------- Party Pass Vote Modal Handlers ---------------
 function partyPassVoteFailHandler(event) {
-
+  event.preventDefault();
+  $.post(`/api/game/${lobbyCode}/validVote`, { vote: -1 }).then(() => $modalContainer.empty()).catch(displayError)
 }
 
 function partyPassVotePassHandler(event) {
+  event.preventDefault();
+  $.post(`/api/game/${lobbyCode}/validVote`, { vote: 1 }).then(() => $modalContainer.empty()).catch(displayError)
+}
 
+// --------------- Error Message Handlers -----------------------
+function displayError(xhr, status, err){
+  console.log("Error from gameHandler.js");
+  console.log(xhr);
+  console.log(status);
+  console.log(err);
 }
