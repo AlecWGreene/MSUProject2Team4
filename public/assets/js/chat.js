@@ -37,7 +37,7 @@ function messageHandler(data) {
   // Append timestamp to the message
   $message.append(
     $("<span>")
-      .text(data.timeStamp)
+      .text("(" + data.timeStamp + ") ")
       .addClass(timeStampClass)
   );
 
