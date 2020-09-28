@@ -119,11 +119,19 @@ $(document).ready(() => {
 
     $("form.create-lobby").on("submit", event => {
         event.preventDefault();
-  
-        $.post("/api/lobby/create",{
-            partySize: 4
-        }).then(res => console.log(res))
 
+        // Force partySize > 5 and < 20
+        if ( !$("input#lobby-size").val().match(/^1?\d$/) || $("input#lobby-size").val() < 5) {
+          alert("Lobby size must be greater than 5");
+          return;
+        }
+  
+        // Create the lobby and redirect the user
+        $.post("/api/lobby/create",{
+            partySize: Number()
+        }).then(() => {
+          window.location.pathname = "/lobby/wait";
+        })
         .catch(handleLoginErr);
 
         function handleLoginErr(err) {
