@@ -82,6 +82,23 @@ module.exports = function(app) {
       });
   });
 
+  app.get("/lobby/all", (req, res) => {
+    db.Lobby.findAll({
+      where: {
+        ingame: null
+      }
+    })
+      .then(dbLobby => {
+        // for (let i = 0; i < dbLobby.length; i++) {
+        //   renderPartial.allLobbies.push(dbLobby[i].dataValues);
+        // }
+        res.json(dbLobby);
+      })
+      .catch(err => {
+        res.status(401).json(err);
+      });
+  });
+
   app.get("/lobby/create", (req, res) => {
     const renderPartial = {
       layout: "userPage",
