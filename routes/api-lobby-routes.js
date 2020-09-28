@@ -124,6 +124,7 @@ module.exports = function(app, sessionManager) {
               email: user.email
             }
           }).then(userModel => {
+            user.lobbyID = code;
             userModel.lobbyID = code;
             userModel.save().then(() => {
               res.status(202).json(code);
@@ -198,6 +199,7 @@ module.exports = function(app, sessionManager) {
           return res.status(202).redirect(`/lobby/${lobby.lobbyCode}`);
         }
 
+        user.lobbyID = lobby.idhash;
         // Add user to lobby
         users.push(user.id);
         lobby.userhash = users.join(",");

@@ -4,7 +4,7 @@ $(document).ready(() => {
     $("#create-lobby").addClass("hide");
     $("#join-lobby").removeClass("hide");
 
-    let lobbySize = 4;
+    let lobbySize = 5;
     let selectArray = [];
 
     // Toggle Search Radius Input Feild 
@@ -14,7 +14,7 @@ $(document).ready(() => {
         if(event.keyCode === 13){
             event.preventDefault(); // Ensure it is only this code that run
             // this will contain a reference to the checkbox   
-            if (!isNaN(this.value) && parseInt(this.value) >= 4) {
+            if (!isNaN(this.value) && parseInt(this.value) >= 5) {
                 // the checkbox is now checked, remove "hide" class
                 $("#player-select-check").removeClass("hide");
                 lobbySize = parseInt(this.value);
@@ -128,7 +128,7 @@ $(document).ready(() => {
   
         // Create the lobby and redirect the user
         $.post("/api/lobby/create",{
-            partySize: Number()
+            partySize: lobbySize
         }).then(() => {
           window.location.pathname = "/lobby/wait";
         })

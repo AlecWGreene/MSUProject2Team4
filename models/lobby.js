@@ -31,7 +31,7 @@ module.exports = function(sequelize, DataTypes) {
     },
 
     numready: {
-      type: DataTypes.INTEGER
+      type: DataTypes.STRING
     }
   });
 
