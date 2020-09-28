@@ -109,6 +109,7 @@ function updatePage(gameState) {
 function displayModal(modal) {
   $modalContainer.empty();
   $modalContainer.append(modal);
+  $modalContainer.removeClass("hide");
   $("#game-modal").attr("data-lobbyCode", lobbyCode);
 }
 
