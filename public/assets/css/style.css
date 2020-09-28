@@ -1,14 +1,105 @@
 /* Vanilla Stylesheet */
-@import url('https://fonts.googleapis.com/css2?family=Rye&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IM+Fell+Great+Primer+SC&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville&display=swap');
 
-form.signup, form.login {
-  margin-top: 50px;
+a, #logout {
+  color:whitesmoke;
+}
+
+a:hover, a:visited, a:link, a:active {
+  color: whitesmoke;
+  text-decoration: none !important;
+}
+
+body, p, label  {
+  color: whitesmoke;
+  font-size: 15px; 
+  font-family: 'Libre Baskerville', serif;
+}
+
+button{
+  margin: 5px;
+  width: auto;
+  font-size: 12px!important; 
+  font-family: 'Libre Baskerville', serif;
 }
 
 .container, button:link, button:visited, button:hover, a:link, a:visited, a:hover, image:hover {
   cursor: url(/assets/img/dagger-sm.png), auto;
   position: relative;
+}
+
+form button {
+  width: 10%; 
+  background: rgba(235, 201, 10, 0.562);
+  border: none; 
+  padding: 10px; 
+  border-radius: 50px;
+  margin-bottom: 10px;
+}
+
+.form-group {
+  border: 0; 
+  padding: 5px; 
+  width: 100%; 
+  margin-right: 0.5%;
+}
+
+form input {
+  border: 0; 
+  padding: 15px; 
+  width: 80%; 
+  margin-right: 0.5%;
+  margin-bottom: 10px;
+  color: black;
+  font-size: 15px; 
+  font-family: 'Libre Baskerville', serif;
+}
+
+form.signup, form.login {
+  margin-top: 50px;
+}
+
+.gold {
+  border-style: groove;
+  border-width: 7px;
+  border-color: rgba(235, 201, 10, 0.562); 
+  border-radius: 25px 
+}
+
+.gold-square {
+  border-style: groove;
+  border-width: 5px;
+  border-color: rgba(235, 201, 10, 0.562); 
+  border-radius: 5px; 
+}
+
+.gradient {
+  background-image: linear-gradient(rgba(245, 245, 245, 0.486), black, rgba(245, 245, 245, 0.486));
+  color:whitesmoke;
+}
+
+.gradient-settings {
+  background-image: linear-gradient( black, rgba(245, 245, 245, 0.486), black);
+  color:whitesmoke;
+}
+
+h1 {
+  color: whitesmoke; 
+  text-align: center;
+  font-size: 25px; 
+  font-weight: bold; 
+  font-family: 'Libre Baskerville', serif;
+  background-color: #0000008c; 
+  width: 200px;
+  height: 100px;
+}
+
+h2 {
+  color: whitesmoke;
+  text-align: center;
+  font-size: 25px; 
+  font-family: 'Libre Baskerville', serif;
 }
 
 hr.style-eight {
@@ -30,37 +121,6 @@ hr.style-eight:after {
   background: none;
 }
 
-title, #avalon-nav {
-  font-family: 'Rye', cursive;
-  font-size: 75px;
-  color: whitesmoke;
-  text-shadow: -1px -1px 0 rgba(235, 201, 10, 0.562), 1px -1px 0 rgba(235, 201, 10, 0.562), -1px 1px 0 rgba(235, 201, 10, 0.562), 1px 1px 0 rgba(235, 201, 10, 0.562);
-}
-
-h1 {
-  color: whitesmoke; 
-  text-align: center;
-  font-size: 25px; 
-  font-weight: bold; 
-  font-family: 'Libre Baskerville', serif;
-  background-color: #0000008c; 
-  width: 200px;
-  height: 100px;
-}
-
-h2 {
-  color: whitesmoke;
-  text-align: center;
-  font-size: 25px; 
-  font-family: 'Libre Baskerville', serif;
-}
-
-p, label, button  {
-  color: whitesmoke;
-  font-size: 15px; 
-  font-family: 'Libre Baskerville', serif;
-}
-
 input {
   width: 15px;
   height: 15px;
@@ -71,68 +131,6 @@ input {
   *overflow: hidden;
 }
 
-::placeholder {
-  color: black;
-  font-size: 12px;
-  font-family: 'Libre Baskerville', serif;
-}
-
-ul, li {
-  list-style-type: none;
-}
-
-a, #logout {
-  color:whitesmoke;
-}
-
-a:hover, a:visited, a:link, a:active {
-  color: whitesmoke;
-  text-decoration: none !important;
-}
-
-.navbar-dark .navbar-toggler {
-  color: rgba(255,255,255,.5);
-  border-color: rgba(255, 255, 255, 0);
-}
-
-.gold {
-  border-style: groove;
-  border-width: 7px;
-  border-color: rgba(235, 201, 10, 0.562); 
-  border-radius: 25px 
-}
-
-.gold-square {
-  border-style: groove;
-  border-width: 5px;
-  border-color: rgba(235, 201, 10, 0.562); 
-  border-radius: 5px; 
-}
-
-.form-group{
-  border: 0; 
-  padding: 5px; 
-  width: 100%; 
-  margin-right: 0.5%;
-}
-
-form input {
-  border: 0; 
-  padding: 5px; 
-  width: 80%; 
-  margin-right: 0.5%;
-  font-size: 12px;
-}
-
-form button {
-  width: 10%; 
-  background: rgb(87, 112, 121); 
-  border: none; 
-  padding: 10px; 
-  border-radius: 50px;
-  margin-bottom: 10px;
-}
-
 .lobby-size {
   border: 0; 
   padding: 5px; 
@@ -140,14 +138,19 @@ form button {
   margin-left: 35%;
 }
 
-.gradient {
-  background-image: linear-gradient(rgba(245, 245, 245, 0.486), black, rgba(245, 245, 245, 0.486));
-  color:whitesmoke;
+.navbar-dark .navbar-toggler {
+  color: rgba(255,255,255,.5);
+  border-color: rgba(255, 255, 255, 0);
 }
 
-.gradient-settings {
-  background-image: linear-gradient( black, rgba(245, 245, 245, 0.486), black);
-  color:whitesmoke;
+::placeholder {
+  color: black;
+  font-size: 12px;
+  font-family: 'Libre Baskerville', serif;
+}
+
+#player-btn {
+  border-color: rgba(235, 201, 10, 0.562); 
 }
 
 #quest {
@@ -155,6 +158,78 @@ form button {
   color:whitesmoke;
 }
 
-#player-btn {
+title, #avalon-nav {
+  font-family:'IM Fell Great Primer SC', serif;
+  font-size: 80px;
+  color: whitesmoke;
+  text-shadow: -2px -2px 0 rgba(235, 201, 10, 0.562), 2px -2px 0 rgba(235, 201, 10, 0.562), -2px 1px 0 rgba(235, 201, 10, 0.562), 2px 1px 0 rgba(235, 201, 10, 0.562);
+}
+
+ul, li {
+  list-style-type: none;
+}
+
+/* Modals' CSS*/
+
+#modal-body {
+  color: whitesmoke;
+  font-size: 15px; 
+  font-family: 'Libre Baskerville', serif;
+}
+
+.modal-button {
+  color: whitesmoke;
+  font-size: 15px; 
+  font-family: 'Libre Baskerville', serif;
+  font-weight: bold;
+  margin: 5px;
+}
+
+#modal-container {
+  position: absolute;
+  float: left;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #000000af;
+  margin: 10px;
+  border: 5px solid;
   border-color: rgba(235, 201, 10, 0.562); 
 }
+
+#modal-header {
+  color: whitesmoke;
+  text-align: center;
+  font-size: 25px; 
+  font-family: 'Libre Baskerville', serif;
+}
+
+#approve-button, #pass-button {
+  font-size: 15px;
+  border-style: groove;
+  border-width: 5px;
+  border-color: rgba(235, 201, 10, 0.562); 
+  background-color: rgb(13, 82, 13); 
+  border-radius: 5px;
+}
+
+#finish-button {
+  font-size: 15px;
+  border-style: groove;
+  border-width: 5px;
+  border-color: rgba(235, 201, 10, 0.562); 
+  background-color: rgb(0, 0, 206); 
+  border-radius: 5px;
+}
+
+#reset-button, #fail-button, #veto-butto  {
+  font-size: 15px;
+  border-style: groove;
+  border-width: 5px;
+  border-color: rgba(235, 201, 10, 0.562); 
+  background-color: rgb(179, 4, 4); 
+  border-radius: 5px;
+}
+
+
+
