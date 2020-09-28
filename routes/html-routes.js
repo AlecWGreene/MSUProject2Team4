@@ -41,7 +41,8 @@ module.exports = function(app) {
   });
 
   // Render games page
-  app.get("/game", isAuthenticated, (req, res) => {
+  // app.get("/game", isAuthenticated, (req, res) => {
+  app.get("/games", isAuthenticated, (req, res) => {
     res.render("games", { layout: "gameNav" });
   });
 
