@@ -188,7 +188,7 @@ module.exports = function(app, sessionManager) {
     })
       .then(lobby => {
         if (lobby.maxusers <= lobby.numusers) {
-          return res.status(406).send("Lobby is Full");
+          return res.status(406).json("Lobby is Full");
         }
 
         // Add user to hash
@@ -196,7 +196,7 @@ module.exports = function(app, sessionManager) {
 
         // If user is in the lobby already, redirect them
         if (users.includes(user.id.toString())) {
-          return res.status(202).redirect(`/lobby/${lobby.lobbyCode}`);
+          return res.status(202).redirect(`/lobby/wait`);
         }
 
         user.lobbyID = lobby.idhash;
