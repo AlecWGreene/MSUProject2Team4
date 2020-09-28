@@ -52,8 +52,17 @@ module.exports = function(app) {
 
   // Render join lobby page
   app.get("/lobby/join", isAuthenticated, (req, res) => {
+    // Redirect if lobby in game
     if (req.user.lobbyID) {
-      res.redirect("../game");
+      db.Lobby.findOne({
+        where: {
+          idhash: req.user.lobbyID
+        }
+      }).then(lobby => {
+        if (lobby.ingame) {
+          res.redirect("../game");
+        }
+      });
     }
     res.render("joinLobby", { layout: "userPage" });
   });
