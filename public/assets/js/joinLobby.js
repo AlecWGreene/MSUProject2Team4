@@ -50,11 +50,11 @@ $(document).ready(() => {
 
     $(".lobby-select").on("click", function() {
         event.preventDefault();
-        event.stopPropagation();
-
+        // let selectIdHash = this.children[0].children[0].children[0].children[0].id;
+        // let selectTargIdHash = event.target.id;
         let select = parseInt(event.target.id.split("-")[0])
         let idHash = event.target.id.split("-")[1]
-        
+        // && select !== selectLast
         if(idHash === lobbiesInfo[select].idhash && select !== selectLast) {
             $(".join-lobby").addClass("hide");
             $(".add-lobby").removeClass("hide");
@@ -73,12 +73,11 @@ $(document).ready(() => {
 
     function joinlobby(idHash){
         $.post(`/api/lobby/join/${idHash}`)
-        .then(() => {
-            window.location.pathname = "/lobby/wait";
-        })
+        .then(res => console.log(res))
+
         .catch(handleLoginErr);
 
-        function handleLoginErr(xhr, status, err) {
+        function handleLoginErr(err) {
             $("#alert .msg").text(err.responseJSON);
             $("#alert").fadeIn(500);
             console.log(err);

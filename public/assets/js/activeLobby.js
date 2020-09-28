@@ -4,6 +4,9 @@ $(document).ready(() => {
     $("#create-lobby").addClass("hide");
     $("#join-lobby").addClass("hide");
 
+
+    let e = 0;
+    let ellipses = "";
     let lobbyData = {};
 
     // call updatedForecast function
@@ -17,7 +20,6 @@ $(document).ready(() => {
 
         $.get("/api/lobby/data")    
             .then(res => {
-
                 lobbyData = {
                     lobbyName: res.name,
                     lobbyID: res.code,
@@ -28,10 +30,9 @@ $(document).ready(() => {
                     host: res.hostid,
                     user: res.currentid
                 }
-
+            
+                
                 // Add lobby Code to lobby wait room
-                $(".start-game").empty();
-
                 renderUsers(lobbyData);
                 updateLobbyReadyStatus(lobbyData);
             })
@@ -43,16 +44,27 @@ $(document).ready(() => {
                 $("#alert").fadeIn(500);
                 console.log(err);
             }
-
+           
             function renderUsers(data) {
+                $(".start-game").empty();
                 if(data.maxUsers === data.numReady.length && data.host === data.user) {
-                    $(".start-game").append(`<button type="submit" class="btn col-5 gradient gold-square empty pass fail" id="start">Start ${lobbyData.lobbyName}</button>`);
+                    $(".start-game").append(`<div class="row justify-content-center"><button type="submit" class="btn col-5 gradient gold-square empty pass fail" id="start">Start ${lobbyData.lobbyName}</button></div>`);
                 }else{
                     $(".start-game").append(`<h5 for="lobby-name" id="lobby-name">${lobbyData.lobbyName}</h5>`);
                 };
+                
+                if(e < 3){
+                    ellipses+=".";
+                    e++;
+                }else{
+                    ellipses = "";
+                    e = 0;
+                }
+
+                $("#user-count").text(`${lobbyData.members.length} of ${lobbyData.maxUsers} players in lobby${ellipses}`);
+
                 $("#view-participants").empty()
-                // for(i=0;i<lobbySize;i++) {
-                for(i=0;i<data.maxUsers;i++) {
+                for(let i=0;i<data.maxUsers;i++) {
                     let id = "";
                     let username = "";
                     if(data.members[i] === undefined){
