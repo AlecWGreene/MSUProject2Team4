@@ -42,26 +42,26 @@ function partySelectionResetHandler(event) {
 function partyValidVoteVetoHandler(event) {
   event.preventDefault();
   let lobbyCode = $("#game-modal").attr("data-lobbyCode");
-  $.post(`/api/game/${lobbyCode}/validVote`, { vote: -1 }).then(() => $modalContainer.empty()).catch(displayError);
+  $.post(`/api/game/${lobbyCode}/validVote`, { vote: -1 }).then(() => { $modalContainer.empty(); $modalContainer.addClass("hide"); }).catch(displayError);
 }
 
 function partyValidVoteApproveHandler(event) {
   event.preventDefault();
   let lobbyCode = $("#game-modal").attr("data-lobbyCode");
-  $.post(`/api/game/${lobbyCode}/validVote`, { vote: 1 }).then(() => $modalContainer.empty()).catch(displayError)
+  $.post(`/api/game/${lobbyCode}/validVote`, { vote: 1 }).then(() => { $modalContainer.empty(); $modalContainer.addClass("hide"); }).catch(displayError)
 }
 
 // --------------- Party Pass Vote Modal Handlers ---------------
 function partyPassVoteFailHandler(event) {
   event.preventDefault();
   let lobbyCode = $("#game-modal").attr("data-lobbyCode");
-  $.post(`/api/game/${lobbyCode}/validVote`, { vote: -1 }).then(() => $modalContainer.empty()).catch(displayError)
+  $.post(`/api/game/${lobbyCode}/validVote`, { vote: -1 }).then(() => { $modalContainer.empty(); $modalContainer.addClass("hide"); }).catch(displayError)
 }
 
 function partyPassVotePassHandler(event) {
   event.preventDefault();
   let lobbyCode = $("#game-modal").attr("data-lobbyCode");
-  $.post(`/api/game/${lobbyCode}/validVote`, { vote: 1 }).then(() => $modalContainer.empty()).catch(displayError)
+  $.post(`/api/game/${lobbyCode}/validVote`, { vote: 1 }).then(() => { $modalContainer.empty(); $modalContainer.addClass("hide"); }).catch(displayError)
 }
 
 // --------------- Error Message Handlers -----------------------
