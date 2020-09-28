@@ -19,8 +19,8 @@ function partySelectionItemToggle(event) {
 
 function partySelectionFinishHandler(event) {
     event.preventDefault();
-    let userArray = Object.values($(".selection-item")).splice(0,Object.values($(".selection-item")).length - 4).map(item => $(item).data("id"));
-    let lobbyCode = $("#game-modal").data("lobbyCode");
+    let userArray = Object.values($(".selection-item")).splice(0,Object.values($(".selection-item")).length - 4).map(item => $(item).attr("data-id"));
+    let lobbyCode = $("#game-modal").attr("data-lobbyCode");
 
   $.post(`/api/game/${lobbyCode}/partySelection`, {
     userArray: userArray 
@@ -41,26 +41,26 @@ function partySelectionResetHandler(event) {
 // --------------- Party Valid Vote Modal Handlers ---------------
 function partyValidVoteVetoHandler(event) {
   event.preventDefault();
-  let lobbyCode = $("#game-modal").data("lobbyCode");
+  let lobbyCode = $("#game-modal").attr("data-lobbyCode");
   $.post(`/api/game/${lobbyCode}/validVote`, { vote: -1 }).then(() => $modalContainer.empty()).catch(displayError);
 }
 
 function partyValidVoteApproveHandler(event) {
   event.preventDefault();
-  let lobbyCode = $("#game-modal").data("lobbyCode");
+  let lobbyCode = $("#game-modal").attr("data-lobbyCode");
   $.post(`/api/game/${lobbyCode}/validVote`, { vote: 1 }).then(() => $modalContainer.empty()).catch(displayError)
 }
 
 // --------------- Party Pass Vote Modal Handlers ---------------
 function partyPassVoteFailHandler(event) {
   event.preventDefault();
-  let lobbyCode = $("#game-modal").data("lobbyCode");
+  let lobbyCode = $("#game-modal").attr("data-lobbyCode");
   $.post(`/api/game/${lobbyCode}/validVote`, { vote: -1 }).then(() => $modalContainer.empty()).catch(displayError)
 }
 
 function partyPassVotePassHandler(event) {
   event.preventDefault();
-  let lobbyCode = $("#game-modal").data("lobbyCode");
+  let lobbyCode = $("#game-modal").attr("data-lobbyCode");
   $.post(`/api/game/${lobbyCode}/validVote`, { vote: 1 }).then(() => $modalContainer.empty()).catch(displayError)
 }
 

@@ -65,16 +65,20 @@ function updatePage(gameState) {
       stallUser({ duration: 0 });
       break;
     case "Game Over":
-      stallUser({ duration: 0 });
+      let modal = getModalTemplate();
+      $(modal).children()[0].text("Game Over!")
+      displayModal(modal);
       break;
   }
+
+  addEventHandlers(gameState.phase);
 }
 
 // Remove existing modals and display a new one
 function displayModal(modal) {
   $modalContainer.empty();
-  $("#game-modal").attr("data-lobbyCode", lobbyCode);
   $modalContainer.append(modal);
+  $("#game-modal").attr("data-lobbyCode", lobbyCode);
 }
 
 // Show the waiting modal
@@ -82,6 +86,7 @@ function stallUser(data) {
   // Display roles to pertinent characters
   const $modal = getWaitModal(data.phase);
   displayModal($modal);
+  addEventHandlers(data.phase);
 
   // Setup intervals for page update and progressbar timer
   const duration = data.duration;

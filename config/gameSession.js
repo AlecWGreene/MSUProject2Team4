@@ -322,7 +322,7 @@ class GameSession {
     }
 
     // Allocate user's vote
-    this.partyValidVotes[user.id] = vote;
+    this.partyValidVotes[user.id] = parseInt(vote);
 
     // If all votes are in, then tally them
     if (Object.keys(this.partyValidVotes).length === this.users.length) {
@@ -386,7 +386,7 @@ class GameSession {
 
       this.partyPassVotes[user.id] = 1;
     } else {
-      this.partyPassVotes[user.id] = vote;
+      this.partyPassVotes[user.id] = parseInt(vote);
     }
 
     // Check if all votes are cast
@@ -471,7 +471,7 @@ class GameState {
     // Get role assignments and swap out ids for user objects
     let roles = Object.entries(this.roleAssignments);
     roles = roles.map(entry => [
-      this.users.find(tUser => tUser.id === entry[0]),
+      this.users.find(tUser => tUser.id.toString() === entry[0]),
       entry[1]
     ]);
     switch (role) {
