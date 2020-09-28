@@ -299,20 +299,37 @@ module.exports = function(app, sessionManager) {
               sessionManager.createSession(users, settings);
               return res.status(202).redirect("/game");
             } else {
-              const returnData = {
-                name: lobby.lobbyname,
-                code: lobby.idhash,
-                numReady: lobby.numready,
-                lobbyReady: lobby.ingame,
-                // User object passed to people in lobby
-                users: users.map(person => {
-                  return {
-                    username: person
+              db.User.findAll({
+                where: {
+                  id: {
+                    [Op.in]: lobby.numReady.split(",").map(str => Number(str))
+                  }
+                }
+              })
+                .then(readyList => {
+                  const returnData = {
+                    name: lobby.lobbyname,
+                    code: lobby.idhash,
+                    numReady: readyList.map(person => {
+                      return {
+                        id: person.id,
+                        username: person.username
+                      };
+                    }),
+                    lobbyReady: lobby.ingame,
+                    maxUsers: lobby.maxusers,
+                    // User object passed to people in lobby
+                    users: users.map(person => {
+                      return {
+                        id: person.id,
+                        username: person.username
+                      };
+                    })
                   };
-                })
-              };
 
-              return res.status(202).json(returnData);
+                  return res.status(202).json(returnData);
+                })
+                .catch(err => res.status(400).json(err));
             }
           })
           .catch(err => {
@@ -323,4 +340,7 @@ module.exports = function(app, sessionManager) {
         return res.status(404).json(err);
       });
   });
+
+  // POST /api/lobby/ready-up
+  app.post("/api/lobby/ready-up", isAuthenticated, (req, res) => {});
 };
