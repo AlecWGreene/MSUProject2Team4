@@ -96,7 +96,7 @@ $(document).ready(() => {
                 iconRemDivEl = $("#remove-player-" + i)
                 // remove color from button
                 // btnDivEl.removeClass("green-btn")
-                btnDivEl.removeClass("btn-success")
+                btnDivEl.removeClass("btn-warning")
                 // hide remove icon
                 iconRemDivEl.addClass("hide")
                 // un-hide add icon
@@ -106,7 +106,7 @@ $(document).ready(() => {
                     if(selectArray[j].id === btnDivEl.data("id")) {
                         // add color from button
                         // btnDivEl.addClass("green-btn");
-                        btnDivEl.addClass("btn-success");
+                        btnDivEl.addClass("btn-warning");
                         // hide add icon
                         iconAddDivEl.addClass("hide")
                         // un-hide remove icon
