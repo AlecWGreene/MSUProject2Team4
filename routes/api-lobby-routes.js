@@ -96,7 +96,7 @@ module.exports = function(app, sessionManager) {
 
     // User must give a max party size
     if (!req.body.partySize) {
-      return res.status(409).send("Lobby requires party size");
+      return res.status(409).json("Lobby requires party size");
     }
 
     // Get all existing lobby codes
@@ -263,6 +263,13 @@ module.exports = function(app, sessionManager) {
         if (!readyUsers.includes(u)) {
           return res.status(406).json("User's aren't ready");
         }
+      }
+
+      // If game is already running
+      if (lobby.ingame) {
+        return res
+          .status(202)
+          .json({ message: "Welcome Back", code: lobby.idhash });
       }
 
       // Indicate game is ready to launch

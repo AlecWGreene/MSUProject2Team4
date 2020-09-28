@@ -467,57 +467,45 @@ class GameState {
     this.prevPartyPassVotes = session.prevPartyPassVotes;
   }
 
-  debug_displaySession() {
-    const data = this.getPhaseInfo();
-
-    // Show roles
-    data.roles = {};
-    for (const user of this.users) {
-      data.roles[user.username] = this.roleAssignments[user.id];
-    }
-
-    // Add info per phase
-    switch (data.phase) {
-      case "Party Selection":
-        data.votes = {};
-        for (const user of this.currentParty) {
-          data.votes[user.username] = this.prevPartyPassVotes[user.id];
-        }
-        break;
-      case "Party Validation":
-        break;
-      case "Party Voting":
-        break;
-      case "Computing":
-        break;
-      case "Game Over":
-        break;
-    }
-
-    return data;
-  }
-
   getRevealInfo(role) {
-    const roles = Object.entries(this.roleAssignments);
+    // Get role assignments and swap out ids for user objects
+    let roles = Object.entries(this.roleAssignments);
+    roles = roles.map(entry => [
+      this.users.find(tUser => tUser.id === entry[0]),
+      entry[1]
+    ]);
     switch (role) {
       case "Merlin":
         return roles
           .filter(entry => ["Minion", "Assassin"].includes(entry[1]))
           .map(entry => {
             return {
-              name: entry[0],
-              role: entry[1]
+              id: entry[0].id,
+              name: entry[0].username,
+              role: "Minion"
             };
           });
       case "Percival":
         return roles
           .filter(entry => ["Merlin"].includes(entry[1]))
-          .map(entry => entry[0]);
+          .map(entry => {
+            return {
+              id: entry[0].id,
+              name: entry[0].username,
+              role: "Merlin"
+            };
+          });
       case "Assassin":
       case "Minion":
         return roles
           .filter(entry => ["Minion"].includes(entry[1]))
-          .map(entry => entry[0]);
+          .map(entry => {
+            return {
+              id: entry[0].id,
+              name: entry[0].username,
+              role: "Minion"
+            };
+          });
       case "Hero":
         return [];
     }
@@ -536,7 +524,8 @@ class GameState {
     data.history = this.questResults;
     switch (data.phase) {
       case "Character Reveal":
-        data.reveals = this.getRevealInfo(this.roleAssignments(user.id));
+        data.reveals = this.getRevealInfo(this.roleAssignments[user.id]);
+        data.userRole = this.roleAssignments[user.id];
       case "Party Selection":
         // Show previous quest result
         if (this.currentQuestIndex !== 0) {

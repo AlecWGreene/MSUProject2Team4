@@ -20,10 +20,9 @@ function partySelectionItemToggle(event) {
 function partySelectionFinishHandler(event) {
     event.preventDefault();
     let userArray = Object.values($(".selection-item")).splice(0,Object.values($(".selection-item")).length - 4).map(item => $(item).data("id"));
+    let lobbyCode = $("#game-modal").data("lobbyCode");
 
-    console.log(userArray);
-
-  $.post("/api/game/aaaa/partySelection", {
+  $.post(`/api/game/${lobbyCode}/partySelection`, {
     userArray: userArray 
   })
     .then(() => {
@@ -40,24 +39,28 @@ function partySelectionResetHandler(event) {
 }
 
 // --------------- Party Valid Vote Modal Handlers ---------------
-function partyValidVoteVetoHandler(lobbyCode, event) {
+function partyValidVoteVetoHandler(event) {
   event.preventDefault();
+  let lobbyCode = $("#game-modal").data("lobbyCode");
   $.post(`/api/game/${lobbyCode}/validVote`, { vote: -1 }).then(() => $modalContainer.empty()).catch(displayError);
 }
 
 function partyValidVoteApproveHandler(event) {
   event.preventDefault();
+  let lobbyCode = $("#game-modal").data("lobbyCode");
   $.post(`/api/game/${lobbyCode}/validVote`, { vote: 1 }).then(() => $modalContainer.empty()).catch(displayError)
 }
 
 // --------------- Party Pass Vote Modal Handlers ---------------
 function partyPassVoteFailHandler(event) {
   event.preventDefault();
+  let lobbyCode = $("#game-modal").data("lobbyCode");
   $.post(`/api/game/${lobbyCode}/validVote`, { vote: -1 }).then(() => $modalContainer.empty()).catch(displayError)
 }
 
 function partyPassVotePassHandler(event) {
   event.preventDefault();
+  let lobbyCode = $("#game-modal").data("lobbyCode");
   $.post(`/api/game/${lobbyCode}/validVote`, { vote: 1 }).then(() => $modalContainer.empty()).catch(displayError)
 }
 
