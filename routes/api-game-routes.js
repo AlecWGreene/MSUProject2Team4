@@ -48,7 +48,7 @@ module.exports = function(app, sessionManager) {
               })
                 .then(reqUser => {
                   session.revealCharacterInfo();
-                  res.json(
+                  return res.json(
                     initState.getRevealInfo(session.roleAssignments[reqUser.id])
                   );
                 })
