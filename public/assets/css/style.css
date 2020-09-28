@@ -188,8 +188,6 @@ input {
 .col-1 {
   padding: 0px;
 }
-#player-select-form {
-}
 
 
 #quest {
@@ -261,7 +259,7 @@ ul, li {
   border-radius: 5px;
 }
 
-#reset-button, #fail-button, #veto-butto  {
+#reset-button, #fail-button, #veto-button, #assassin-select-button {
   font-size: 15px;
   border-style: groove;
   border-width: 5px;
