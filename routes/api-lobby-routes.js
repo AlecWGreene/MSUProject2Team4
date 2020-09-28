@@ -312,6 +312,8 @@ module.exports = function(app, sessionManager) {
                 const returnData = {
                   name: lobby.lobbyname,
                   code: lobby.idhash,
+                  hostid: lobby.creatorid,
+                  currentid: user.id,
                   numReady: [],
                   lobbyReady: lobby.ingame,
                   maxUsers: lobby.maxusers,
