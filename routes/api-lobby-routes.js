@@ -341,6 +341,8 @@ module.exports = function(app, sessionManager) {
                   const returnData = {
                     name: lobby.lobbyname,
                     code: lobby.idhash,
+                    hostid: lobby.creatorid,
+                    currentid: user.id,
                     numReady: readyList.map(person => {
                       return {
                         id: person.id,
