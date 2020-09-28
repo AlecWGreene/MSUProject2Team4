@@ -518,6 +518,8 @@ class GameState {
         return roles
           .filter(entry => ["Minion"].includes(entry[1]))
           .map(entry => entry[0]);
+      case "Hero":
+        return [];
     }
   }
 
@@ -533,6 +535,8 @@ class GameState {
     }
     data.history = this.questResults;
     switch (data.phase) {
+      case "Character Reveal":
+        data.reveals = this.getRevealInfo(this.roleAssignments(user.id));
       case "Party Selection":
         // Show previous quest result
         if (this.currentQuestIndex !== 0) {

@@ -41,8 +41,8 @@ module.exports = function(app) {
   });
 
   // Render games page
-  app.get("/games", isAuthenticated, (req, res) => {
-    res.render("games", { layout: "userPage" });
+  app.get("/game", isAuthenticated, (req, res) => {
+    res.render("games", { layout: "gameNav" });
   });
 
   // Render active lobby waiting room

@@ -270,10 +270,10 @@ module.exports = function(app, sessionManager) {
       lobby
         .save()
         .then(() => {
-          return res.status(202).json("Game Started");
+          return res.status(202).json({message: "Game Started", code: lobby.idhash});
         })
         .catch(err => {
-          return res.status(403).json(err);
+          return res.status(409).json(err);
         });
     });
   });

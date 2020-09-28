@@ -90,7 +90,7 @@ function displayReveals(showDuration, data) {
   // Display roles to pertinent characters
   const $modal = getWaitModal("users to look over the reveal information");
   const $dataList = $("<ul>");
-  data.forEach(el => $dataList.append($("<li>").text(el.name + "--" + el.role)));
+  data.reveals.forEach(el => $dataList.append($("<li>").text(el.name + "--" + el.role)));
   $($modal.children()[1]).append($dataList);
   displayModal($modal);
 
@@ -143,21 +143,24 @@ function updateQuestResult(questIndex, result) {
 
 // DUBUGGING ONLY
 $(document).ready(() => {
-  $.post("/api/lobby/create", { partySize: 4}).then(code => {
-    lobbyCode = code;
+  // $.post("/api/lobby/create", { partySize: 4}).then(code => {
+  //   lobbyCode = code;
     $.post("/api/lobby/start-game").then(resp => {
-      if(resp === "Game Started"){
+      if(resp.message === "Game Started"){
         // Game is ready
+        lobbyCode = resp.code
         $.get(`/api/game/${lobbyCode}/run`).then(data => {
           if(data){
             displayReveals(30000, data);
             updateInterval = setInterval(() => checkForUpdate(), 5000);
           }
         }).catch(handleAJAXError);
+      } else{
+        // If user refresehd the page mid game
       }
     }).catch(handleAJAXError);
-  }).catch(handleAJAXError);
-})
+  });
+// })
 
 // Display AJAX errors in the console
 function handleAJAXError(xhr, status, err) {
