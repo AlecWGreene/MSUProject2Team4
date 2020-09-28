@@ -214,7 +214,7 @@ module.exports = function(app, sessionManager) {
               }
             })
               .then(dbUser => {
-                dbUser.lobbyHash = lobby.lobbyCode;
+                dbUser.lobbyID = lobby.idhash;
                 dbUser
                   .save()
                   .then(() => {
