@@ -1,5 +1,9 @@
 // Emit message to lobby on user connect
 function userConnectHandler() {
+  if(!this.request.session.passport){
+    return "Socket.io userConnectHandler User not found";
+  }
+
   this.nsp.emit("user connect", {
     user: this.request.session.passport.user
   });
@@ -7,6 +11,10 @@ function userConnectHandler() {
 
 // Emit message to lobby on user disconnect
 function userDisconnectHandler() {
+  if(!this.request.session.passport){
+    return "Socket.io userDisconnectHandler user not found";
+  }
+
   this.nsp.emit("user disconnect", {
     user: this.request.session.passport.user
   });
@@ -14,6 +22,9 @@ function userDisconnectHandler() {
 
 // Transmit messages among lobby members
 function messageHandler(chatMessage) {
+  if(!this.request.session.passport){
+    return "Socket.io messsageHandlerUser not found";
+  }
   this.nsp.emit("chat message", {
     user: this.request.session.passport.user,
     message: chatMessage,
