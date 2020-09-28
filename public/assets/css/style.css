@@ -24,9 +24,13 @@ button{
   font-family: 'Libre Baskerville', serif;
 }
 
-.container, button:link, button:visited, button:hover, a:link, a:visited, a:hover, image:hover {
-  cursor: url(/assets/img/dagger-sm.png) 5 24, auto;
+/* .container, button:link, button:visited, button:hover, a:link, a:visited, a:hover, image:hover {
+  cursor: url(/assets/img/dagger-sm.png) 5 24, auto; */
+.container, button:active, button:link, button:visited, button:hover, a:link, a:visited, a:hover, image:hover {
+  cursor: url(/assets/img/dagger-sm.png), auto;
   position: relative;
+  color:whitesmoke!important;
+  background-color: none;
 }
 
 form button {
