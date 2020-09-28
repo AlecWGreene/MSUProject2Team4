@@ -7,7 +7,6 @@ $(document).ready(() => {
     let lobbyData = {};
 
     $.get("/api/lobby/data")    
-
         .then(res => {
 
             lobbyData = {
@@ -60,7 +59,6 @@ $(document).ready(() => {
                     </li>`
                 );
             };
-        }
-        
+        }   
     
 });
