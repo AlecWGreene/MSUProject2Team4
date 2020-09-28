@@ -12,7 +12,6 @@ function checkForUpdate() {
     return new Promise(resolve => {
         $.post(`/api/game/${lobbyCode}/state`, {cache: cachedState}).then( data => {
           if (data === "Up to date") {
-            console.log("Game state matches cloud");
             resolve();
           } else{
             cachedState = data;
@@ -97,6 +96,7 @@ function updatePage(gameState) {
     case "Game Over":
       let modal = getModalTemplate();
       $($(modal).children()[0]).text("Game Over!");
+      $($(modal).children()[1]).text((gameState.winner === 1) ? "Heroes of Merlin are victorious!" : "Minions of Mordred have prevailed!");
       displayModal(modal);
       break;
   }

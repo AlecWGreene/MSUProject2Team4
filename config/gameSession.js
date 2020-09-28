@@ -374,7 +374,6 @@ class GameSession {
       // If the vote passes, then set the candidate as current party otherwise restart the vote
       if (numYes >= numNo) {
         this.setParty(this.candidateParty);
-        this.numFails = 0;
         this.candidateParty = [];
         this.currentPhase = "Party Voting";
       } else {
@@ -439,6 +438,7 @@ class GameSession {
       // Increment counter if quest didn't fail
       this.questResults[this.currentQuestIndex] = failed ? -1 : 1;
       this.passedQuests += failed ? 0 : 1;
+      this.numFails += failed ? 1 : 0;
       this.currentQuestIndex++;
 
       // If number of passed quests is met
@@ -616,6 +616,7 @@ class GameState {
       case "Computing":
         break;
       case "Game Over":
+        data.winner = this.winner;
         break;
     }
     return data;
