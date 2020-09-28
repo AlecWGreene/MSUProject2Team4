@@ -10,7 +10,7 @@ $(document).ready(() => {
     updatelobbyData()
 
     // set routine timeinterval of 10 sec to call updatelobbyData function - periodically update lobbyData
-    setInterval(updatelobbyData,10000); 
+    setInterval(updatelobbyData,1000); 
 
     function updatelobbyData(){
 
@@ -32,6 +32,7 @@ $(document).ready(() => {
                 $(".start-game").empty();
 
                 renderUsers(lobbyData);
+                updateLobbyReadyStatus(lobbyData);
             })
 
             .catch(handleLoginErr);
@@ -113,6 +114,20 @@ $(document).ready(() => {
             };
             
         });
+
+        function updateLobbyReadyStatus(data) {
+          $("#view-participants").children().each((i, element) => {
+            const index = $($($($(element).children()[0]).children()[0]).children()[0]).attr("id").split("-")[2];
+            const isMatch = data.numReady.filter(readyMember => readyMember.id == data.members[index].id);
+            if(isMatch.length > 0){
+                $(`#pending-player-${index}`).addClass("hide");
+                $(`#ready-player-${index}`).removeClass("hide");
+            } else {
+                $(`#ready-player-${index}`).addClass("hide");
+                $(`#pending-player-${index}`).removeClass("hide");
+            }
+          });
+        }
 
         function updateReadyStatus() {
             $.post("/api/lobby/ready-up")

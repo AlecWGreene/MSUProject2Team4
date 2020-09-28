@@ -195,7 +195,7 @@ module.exports = function(app, sessionManager) {
         const users = lobby.userhash.split(",");
 
         // If user is in the lobby already, redirect them
-        if (users.includes(user.id)) {
+        if (users.includes(user.id.toString())) {
           return res.status(202).redirect(`/lobby/${lobby.lobbyCode}`);
         }
 
@@ -258,7 +258,7 @@ module.exports = function(app, sessionManager) {
       }
 
       // Check all users are ready
-      const readyUsers = lobby.numReady ? lobby.numReady : [];
+      const readyUsers = lobby.numready ? lobby.numready : [];
       for (const u of lobby.userhash.split(",")) {
         if (!readyUsers.includes(u)) {
           return res.status(406).json("User's aren't ready");
@@ -305,12 +305,10 @@ module.exports = function(app, sessionManager) {
           .then(users => {
             // Check if game is ready to start, then register the session with the sessionManager and redirect the users
             if (lobby.ingame && lobby.numready === lobby.numusers) {
-              const settings = req.body.settings ? req.body.settings : {};
-              sessionManager.createSession(users, settings);
               return res.status(202).redirect("/game");
             } else {
               // If numReady is null returnData
-              if (!lobby.numReady) {
+              if (!lobby.numready) {
                 const returnData = {
                   name: lobby.lobbyname,
                   code: lobby.idhash,
@@ -335,7 +333,7 @@ module.exports = function(app, sessionManager) {
               db.User.findAll({
                 where: {
                   id: {
-                    [Op.in]: lobby.numReady.split(",").map(str => Number(str))
+                    [Op.in]: lobby.numready.split(",").map(str => Number(str))
                   }
                 }
               })
@@ -392,9 +390,9 @@ module.exports = function(app, sessionManager) {
         db.User.findAll({
           where: {
             id: {
-              [Op.in]: !lobby.numReady
+              [Op.in]: !lobby.numready
                 ? []
-                : lobby.numReady.split(",").map(str => Number(str))
+                : lobby.numready.split(",").map(str => Number(str))
             }
           }
         })
@@ -411,7 +409,7 @@ module.exports = function(app, sessionManager) {
             }
 
             // Update lobby value
-            lobby.numReady = newReadyUsers.join(",");
+            lobby.numready = newReadyUsers.join(",");
             lobby
               .save()
               .then(() => {
