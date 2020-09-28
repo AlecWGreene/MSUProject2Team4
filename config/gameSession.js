@@ -604,6 +604,8 @@ class GameState {
         data.assassinId = Object.values(this.roleAssignments)
           .filter(arr => arr[1] === "Assassin")
           .map(arr => parseInt(arr[0]));
+        data.assassin = this.users.find(us => us.id === data.assassinId[0]);
+        data.isAssassin = user.id === data.assassinId;
         data.users = this.users.map(user => {
           return {
             id: user.id,

@@ -65,10 +65,38 @@ function updatePage(gameState) {
       stallUser({ duration: 0 });
       break;
     case "Assassin Hunting":
+      if (gameState.isAssassin) {  
+        const modal = getModalTemplate();
+        $($(modal).children()[0]).text("Assassin, select someone to assassinate");
+
+        // Set the body as all non-assassin players
+        const choiceBody = $("<ul>").addClass("selection-list");
+        for (const user of data.users) {
+          if (gameState.assassinId !== user.id) {
+            const userItem = $("<li>")
+              .addClass("selection-item")
+              .attr("data-id", user.id)
+              .text(user.name);
+            choiceBody.append(userItem);
+          }
+        }
+        $($(modal).children()[1]).append(choiceBody);
+
+        // Add button to perform assassination
+        const selectButton = $("<button>").attr("id","assassin-select-button").addClass("btn").addClass("btn-danger").text("Assassinate");
+        $($(modal).children()[2]).append(selectButton);
+        displayModal(modal)
+      }
+      else {
+        let modal = getModalTemplate();
+        $($(modal).children()[0]).text("Waiting on Assassin to pick his target");
+        $($(modal).children()[1]).text(`Assassin was ${gameState.assassin}`);
+        displayModal(modal)
+      }
       break;
     case "Game Over":
       let modal = getModalTemplate();
-      $(modal).children()[0].text("Game Over!")
+      $($(modal).children()[0]).text("Game Over!");
       displayModal(modal);
       break;
   }
