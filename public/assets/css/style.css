@@ -95,7 +95,7 @@ h1 {
   height: 100px;
 }
 
-h2 {
+h2, h5 {
   color: whitesmoke;
   text-align: center;
   font-size: 25px; 

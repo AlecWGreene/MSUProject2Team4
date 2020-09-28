@@ -1,25 +1,34 @@
-<!-- Lobby Container -->
+<style>
+  body {
+    background-image: url('/assets/img/smokey-woods-1.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    /* Fixed background */
+    background-attachment: fixed;
+  }
+</style>
+
+<!-- Wait Lobby Container -->
 <div class="container">
     <div class="row justify-content-center">
-      <div class="col-md-10 border" style="font-size: 15px; font-weight: bold; font-family: 'Roboto Slab', serif; background-color: #f1f1f1e8; border-radius: 25px; margin-top: 200px;">
+      <div class="col-lg-12 gold"style="background-color: #00000049; border-radius: 5px; margin: 20px;">
         <br>
-            <h2>Custom Lobby</h2>
+            <h2>Main Lobby</h2>
+            <hr class="style-eight">
         </br>
-        <div class="row">
-            <div class="col-12">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 gold mb-10" style="background-color: #00000049; border-radius: 5px; margin: 20px;">
                 <form class="custom-lobby">
 
                     <div class="form-group">
                         <h5 for="lobby-name" id="lobby-code"></h5>
-                        
                     </div>
                 
                     <div class="form-group" id="lobby-info">
-                    
                         <label for="view-participants">Participants</label>
                         <div class="list-group" id="view-participants"></div>
                     </div>
-                
                 </form>
             </div>
         </div>
