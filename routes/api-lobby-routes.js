@@ -200,6 +200,7 @@ module.exports = function(app, sessionManager) {
 
         // Add user to lobby
         users.push(user.id);
+        lobby.userhash = users.join(",");
         lobby.numusers++;
 
         // update database entry and redirect user
