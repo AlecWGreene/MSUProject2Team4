@@ -150,6 +150,7 @@ $(document).ready(() => {
   // $.post("/api/lobby/create", { partySize: 4}).then(code => {
   //   lobbyCode = code;
     $.post("/api/lobby/start-game").then(resp => {
+      $("#user-name").html(`<br>${resp.name}`);
       lobbyCode = resp.code
         // Game is ready
         $.get(`/api/game/${lobbyCode}/run`).then(data => {

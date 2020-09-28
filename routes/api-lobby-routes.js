@@ -269,7 +269,7 @@ module.exports = function(app, sessionManager) {
       if (lobby.ingame) {
         return res
           .status(202)
-          .json({ message: "Welcome Back", code: lobby.idhash });
+          .json({ message: "Welcome Back", code: lobby.idhash, name: user.username });
       }
 
       // Indicate game is ready to launch
@@ -279,7 +279,7 @@ module.exports = function(app, sessionManager) {
         .then(() => {
           return res
             .status(202)
-            .json({ message: "Game Started", code: lobby.idhash });
+            .json({ message: "Game Started", code: lobby.idhash, name: user.username });
         })
         .catch(err => {
           return res.status(409).json(err);
