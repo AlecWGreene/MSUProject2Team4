@@ -57,7 +57,7 @@ function getPartySelectModal(userArray) {
     const userItem = $("<li>")
       .addClass("selection-item")
       .attr("data-id", user.id)
-      .text(user.username);
+      .text(user.name);
     choiceBody.append(userItem);
   }
   $($(modal).children()[1]).append(choiceBody);
@@ -144,7 +144,7 @@ function addEventHandlers(modalName) {
     $("#approve-button").on("click", partyValidVoteApproveHandler);
     case "Party Pass Vote":
     $("#fail-button").on("click", partyPassVoteFailHandler);
-      $("#pass-button").on("click", partyPassVotePassHandler);
+    $("#pass-button").on("click", partyPassVotePassHandler);
   }
 }
 

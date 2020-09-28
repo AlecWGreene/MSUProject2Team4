@@ -38,6 +38,9 @@ function updatePage(gameState) {
   // Display appropriate modal to user
   switch(gameState.phase) {
     case "Character Reveal":
+      if ($($modalContainer).children().length === 0) {
+        displayReveals(gameState.duration, gameState);
+      }
       break;
     case "Party Selection":
         if (gameState.isKing) {
@@ -70,6 +73,7 @@ function updatePage(gameState) {
 // Remove existing modals and display a new one
 function displayModal(modal) {
   $modalContainer.empty();
+  $("#game-modal").attr("data-lobbyCode", lobbyCode);
   $modalContainer.append(modal);
 }
 
@@ -88,9 +92,9 @@ function stallUser(data) {
 // Show the user any information they are revealed at the beginning of the game
 function displayReveals(showDuration, data) {
   // Display roles to pertinent characters
-  const $modal = getWaitModal("users to look over the reveal information");
+  const $modal = getWaitModal("users to look over the reveal information. Your role is: " + data.userRole);
   const $dataList = $("<ul>");
-  data.forEach(el => $dataList.append($("<li>").text(el.name + "--" + el.role)));
+  data.reveals.forEach(el => $dataList.append($("<li>").text(el.name + "--" + el.role)));
   $($modal.children()[1]).append($dataList);
   displayModal($modal);
 
@@ -143,21 +147,26 @@ function updateQuestResult(questIndex, result) {
 
 // DUBUGGING ONLY
 $(document).ready(() => {
-  $.post("/api/lobby/create", { partySize: 4}).then(code => {
-    lobbyCode = code;
+  // $.post("/api/lobby/create", { partySize: 4}).then(code => {
+  //   lobbyCode = code;
     $.post("/api/lobby/start-game").then(resp => {
-      if(resp === "Game Started"){
+      lobbyCode = resp.code
         // Game is ready
         $.get(`/api/game/${lobbyCode}/run`).then(data => {
-          if(data){
-            displayReveals(30000, data);
-            updateInterval = setInterval(() => checkForUpdate(), 5000);
-          }
-        }).catch(handleAJAXError);
-      }
+          if(resp.message === "Game Started"){
+            if(data){
+              displayReveals(30000, data);
+              updateInterval = setInterval(() => checkForUpdate(), 5000);
+            } 
+          }else{
+              // If user refresehd the page mid game
+              updateInterval = setInterval(() => checkForUpdate(), 5000);
+              console.log("Welcome back!");
+            }
+        }).catch(handleAJAXError); 
     }).catch(handleAJAXError);
-  }).catch(handleAJAXError);
-})
+  });
+// })
 
 // Display AJAX errors in the console
 function handleAJAXError(xhr, status, err) {

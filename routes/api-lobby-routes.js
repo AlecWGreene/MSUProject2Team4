@@ -82,7 +82,7 @@ module.exports = function(app, sessionManager) {
     if (lobby.creatorid === user.id) {
       return lobby;
     } else {
-      return false;
+      return 0;
     }
   }
 
@@ -96,7 +96,7 @@ module.exports = function(app, sessionManager) {
 
     // User must give a max party size
     if (!req.body.partySize) {
-      return res.status(409).send("Lobby requires party size");
+      return res.status(409).json("Lobby requires party size");
     }
 
     // Get all existing lobby codes
@@ -124,6 +124,7 @@ module.exports = function(app, sessionManager) {
               email: user.email
             }
           }).then(userModel => {
+            user.lobbyID = code;
             userModel.lobbyID = code;
             userModel.save().then(() => {
               res.status(202).json(code);
@@ -187,19 +188,21 @@ module.exports = function(app, sessionManager) {
     })
       .then(lobby => {
         if (lobby.maxusers <= lobby.numusers) {
-          return res.status(406).send("Lobby is Full");
+          return res.status(406).json("Lobby is Full");
         }
 
         // Add user to hash
         const users = lobby.userhash.split(",");
 
         // If user is in the lobby already, redirect them
-        if (users.includes(user.id)) {
-          return res.status(202).redirect(`/lobby/${lobby.lobbyCode}`);
+        if (users.includes(user.id.toString())) {
+          return res.status(202).redirect("/lobby/wait");
         }
 
+        user.lobbyID = lobby.idhash;
         // Add user to lobby
         users.push(user.id);
+        lobby.userhash = users.join(",");
         lobby.numusers++;
 
         // update database entry and redirect user
@@ -207,12 +210,22 @@ module.exports = function(app, sessionManager) {
           .save()
           .then(() => {
             // Update user lobby field
-            user.lobbyHash = lobby.lobbyCode;
-            user
-              .save()
-              .then(() => {
-                // Continue to lobby screen
-                return res.status(202).json(lobby.idhash);
+            db.User.findOne({
+              where: {
+                email: user.email
+              }
+            })
+              .then(dbUser => {
+                dbUser.lobbyID = lobby.idhash;
+                dbUser
+                  .save()
+                  .then(() => {
+                    // Continue to lobby screen
+                    return res.status(202).json(lobby.idhash);
+                  })
+                  .catch(err => {
+                    return res.status(403).json(err);
+                  });
               })
               .catch(err => {
                 return res.status(403).json(err);
@@ -239,9 +252,24 @@ module.exports = function(app, sessionManager) {
     }
     const user = req.user;
 
-    isLobbyHead(user).then(lobby => {
+    getUserLobby(user).then(lobby => {
       if (typeof lobby === "number") {
         return res.status(403).json(lobby);
+      }
+
+      // Check all users are ready
+      const readyUsers = lobby.numready ? lobby.numready : [];
+      for (const u of lobby.userhash.split(",")) {
+        if (!readyUsers.includes(u)) {
+          return res.status(406).json("User's aren't ready");
+        }
+      }
+
+      // If game is already running
+      if (lobby.ingame) {
+        return res
+          .status(202)
+          .json({ message: "Welcome Back", code: lobby.idhash });
       }
 
       // Indicate game is ready to launch
@@ -249,10 +277,12 @@ module.exports = function(app, sessionManager) {
       lobby
         .save()
         .then(() => {
-          return res.status(202).json("Game Started");
+          return res
+            .status(202)
+            .json({ message: "Game Started", code: lobby.idhash });
         })
         .catch(err => {
-          return res.status(403).json(err);
+          return res.status(409).json(err);
         });
     });
   });
@@ -284,24 +314,64 @@ module.exports = function(app, sessionManager) {
           .then(users => {
             // Check if game is ready to start, then register the session with the sessionManager and redirect the users
             if (lobby.ingame && lobby.numready === lobby.numusers) {
-              const settings = req.body.settings ? req.body.settings : {};
-              sessionManager.createSession(users, settings);
               return res.status(202).redirect("/game");
             } else {
-              const returnData = {
-                name: lobby.lobbyname,
-                code: lobby.idhash,
-                numReady: lobby.numready,
-                lobbyReady: lobby.ingame,
-                // User object passed to people in lobby
-                users: users.map(person => {
-                  return {
-                    username: person
-                  };
-                })
-              };
+              // If numReady is null returnData
+              if (!lobby.numready) {
+                const returnData = {
+                  name: lobby.lobbyname,
+                  code: lobby.idhash,
+                  hostid: lobby.creatorid,
+                  currentid: user.id,
+                  numReady: [],
+                  lobbyReady: lobby.ingame,
+                  maxUsers: lobby.maxusers,
+                  // User object passed to people in lobby
+                  users: users.map(person => {
+                    return {
+                      id: person.id,
+                      username: person.username
+                    };
+                  })
+                };
 
-              return res.status(202).json(returnData);
+                return res.status(202).json(returnData);
+              }
+
+              // If numReady is not null then getReady tally
+              db.User.findAll({
+                where: {
+                  id: {
+                    [Op.in]: lobby.numready.split(",").map(str => Number(str))
+                  }
+                }
+              })
+                .then(readyList => {
+                  const returnData = {
+                    name: lobby.lobbyname,
+                    code: lobby.idhash,
+                    hostid: lobby.creatorid,
+                    currentid: user.id,
+                    numReady: readyList.map(person => {
+                      return {
+                        id: person.id,
+                        username: person.username
+                      };
+                    }),
+                    lobbyReady: lobby.ingame,
+                    maxUsers: lobby.maxusers,
+                    // User object passed to people in lobby
+                    users: users.map(person => {
+                      return {
+                        id: person.id,
+                        username: person.username
+                      };
+                    })
+                  };
+
+                  return res.status(202).json(returnData);
+                })
+                .catch(err => res.status(400).json(err));
             }
           })
           .catch(err => {
@@ -309,7 +379,61 @@ module.exports = function(app, sessionManager) {
           });
       })
       .catch(err => {
-        return res.status(404).json(err);
+        return res.status(403).json(err);
+      });
+  });
+
+  // POST /api/lobby/ready-up
+  app.post("/api/lobby/ready-up", isAuthenticated, (req, res) => {
+    // Get user
+    if (!req.user) {
+      return res.status(402);
+    }
+    const user = req.user;
+
+    getUserLobby(user)
+      .then(lobby => {
+        // Lobbies aren't numbers
+        if (typeof lobby === "number") {
+          return res.status(403).json(lobby);
+        }
+
+        db.User.findAll({
+          where: {
+            id: {
+              [Op.in]: !lobby.numready
+                ? []
+                : lobby.numready.split(",").map(str => Number(str))
+            }
+          }
+        })
+          .then(readyUsers => {
+            // Toggle user inclusion in readyUsers
+            let toggleOn;
+            const newReadyUsers = readyUsers.map(rUser => rUser.id);
+            if (newReadyUsers.includes(user.id)) {
+              toggleOn = false;
+              newReadyUsers.splice(readyUsers.indexOf(user.id), 1);
+            } else {
+              toggleOn = true;
+              newReadyUsers.push(user.id);
+            }
+
+            // Update lobby value
+            lobby.numready = newReadyUsers.join(",");
+            lobby
+              .save()
+              .then(() => {
+                res.status(200).json(toggleOn.toString());
+              })
+              .catch(err => res.status(502).json(err));
+          })
+          .catch(err => {
+            res.status(404).json(err);
+          });
+      })
+      .catch(err => {
+        return res.status(400).json("Error from getUserLobby.catch 352");
       });
   });
 };
