@@ -1,4 +1,5 @@
 // Dependencies
+require("dotenv").config();
 const express = require("express");
 const session = require("express-session");
 const handlebars = require("express-handlebars");
@@ -12,7 +13,7 @@ const db = require("./models");
 // Setup session middleware
 const sessionMiddleware = session({
   name: "Avalon App User",
-  secret: "Scorpion Samurai",
+  secret: process.env.SECRET,
   resave: true,
   saveUninitialized: true,
   cookie: {
