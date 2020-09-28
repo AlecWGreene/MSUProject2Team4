@@ -401,8 +401,8 @@ module.exports = function(app, sessionManager) {
           .then(readyUsers => {
             // Toggle user inclusion in readyUsers
             let toggleOn;
-            const newReadyUsers = readyUsers;
-            if (readyUsers.includes(user.id)) {
+            const newReadyUsers = readyUsers.map(rUser => rUser.id);
+            if (newReadyUsers.includes(user.id)) {
               toggleOn = false;
               newReadyUsers.splice(readyUsers.indexOf(user.id), 1);
             } else {
