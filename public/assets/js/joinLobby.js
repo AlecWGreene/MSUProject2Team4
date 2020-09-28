@@ -73,7 +73,9 @@ $(document).ready(() => {
 
     function joinlobby(idHash){
         $.post(`/api/lobby/join/${idHash}`)
-        .then(res => console.log(res))
+        .then(res => {
+            window.location.pathname = "/lobby/wait";
+        })
 
         .catch(handleLoginErr);
 
