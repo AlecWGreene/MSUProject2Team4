@@ -32,8 +32,8 @@ $(document).ready(() => {
         window.location.replace("/home");
         // If there's an error, log the error
       })
-      .fail(err => {
-        console.log(err);
+      .catch(err => {
+        console.log(err.responseJSON.errors[0].message);
       });
   }
 });
